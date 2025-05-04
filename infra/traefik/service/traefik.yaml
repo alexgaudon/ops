@@ -14,5 +14,9 @@ spec:
       port: 8080
       targetPort: admin
       nodePort: 30091
+    - name: downward
+      port: 8080
+      targetPort: downward
+      nodePort: 30092
   selector:
     app: traefik
