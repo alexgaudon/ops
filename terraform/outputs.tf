@@ -9,3 +9,8 @@ output "talosconfig" {
   sensitive   = true
   description = "Talosconfig for the cluster"
 }
+
+output "ingress_ip" {
+  value       = module.ingress_host.public_ip
+  description = "Public IP of the ingress host"
+}

@@ -7,11 +7,10 @@ metadata:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
     service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "60"
 spec:
-  type: NodePort
-  externalTrafficPolicy: Cluster
+  selector:
+    app: downward-example
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30092
-  selector:
-    app: downward-example
+      protocol: TCP
+  type: ClusterIP

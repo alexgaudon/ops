@@ -102,6 +102,16 @@ data "talos_client_configuration" "config" {
   endpoints            = [for k, v in local.control_plane_nodes : v.ip]
 }
 
+resource "cloudflare_dns_record" "cluster" {
+  for_each = local.control_plane_nodes
+
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "cluster.ops.misery.systems"
+  content = each.value.ip
+  type    = "A"
+  ttl     = 1
+}
+
 resource "talos_cluster_kubeconfig" "config" {
   depends_on = [module.control_plane_node]
 

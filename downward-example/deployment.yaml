@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: downward-example
-          image: ghcr.io/alexgaudon/downward-api:491f69c594d0c2fd5d471fd3aed3ae84c0bdea3b
+          image: ghcr.io/alexgaudon/downward-api:88c69e1b709a89d3ebf09e9579f3d4e44ef38f1e
           env:
             - name: POD_NAME
               valueFrom:

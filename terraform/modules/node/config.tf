@@ -27,6 +27,20 @@ resource "talos_machine_configuration_apply" "node" {
           zone   = var.zone
         }
       ),
+      yamlencode({
+        machine = {
+          certSANs = [
+            "cluster.ops.misery.systems"
+          ]
+        },
+        cluster = {
+          apiServer = {
+            certSANs = [
+              "cluster.ops.misery.systems"
+            ]
+          }
+        }
+      })
     ],
     var.role == "controlplane" ? [
       file("${path.module}/files/controlplane-scheduling.yaml")
