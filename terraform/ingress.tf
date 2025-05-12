@@ -2,11 +2,11 @@ locals {
   proxied_ports = {
     traefik-http = {
       source_port = 80
-      dest_addr   = "10.0.0.246:30080"
+      dest_addr   = "10.0.0.230:80"
     }
     traefik-https = {
       source_port = 443
-      dest_addr   = "10.0.0.246:30443"
+      dest_addr   = "10.0.0.230:443"
     }
   }
 }

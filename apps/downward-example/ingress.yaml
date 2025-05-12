@@ -9,9 +9,6 @@ spec:
   routes:
     - match: Host(`downward.misery.systems`)
       kind: Rule
-      middlewares:
-        - name: default-headers
-          namespace: default
       services:
         - name: downward-example
           port: 8080

@@ -47,8 +47,6 @@ resource "helm_release" "traefik" {
     value = "64Mi"
   }
 
-  # TODO: See if there's a way to not need insecure
-  # My Rube Goldberg-esque networking solution leaves me with unpredictable source IPs
   set {
     name  = "ports.web.proxyProtocol.insecure"
     value = true

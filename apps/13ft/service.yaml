@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: thirteenft
+  namespace: thirteenft
+  labels:
+    app: thirteenft
+spec:
+  ports:
+    - port: 5000
+      targetPort: 5000
+      name: http
+      protocol: TCP
+  selector:
+    app: thirteenft
