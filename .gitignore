@@ -2,6 +2,8 @@
 # Local .terraform directories
 **/.terraform/*
 
+terraform/github-app.pem
+
 # .tfstate files
 *.tfstate
 *.tfstate.*
