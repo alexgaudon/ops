@@ -20,5 +20,13 @@ terraform {
       source  = "tailscale/tailscale"
       version = "0.20.0"
     }
+    flux = {
+      source  = "fluxcd/flux"
+      version = "1.5.1"
+    }
+    github = {
+      source  = "integrations/github"
+      version = "5.35.0"
+    }
   }
 }

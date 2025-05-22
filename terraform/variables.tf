@@ -13,6 +13,14 @@ variable "lb_ip_range" {
   default = "10.0.0.246-10.0.0.252"
 }
 
+variable "github_app_id" {
+  type = string
+}
+
+variable "github_app_installation_id" {
+  type = string
+}
+
 variable "cloudflare_api_token" {
   type = string
 }
