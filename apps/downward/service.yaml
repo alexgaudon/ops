@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: downward-example
-  namespace: default
+  namespace: downward
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
@@ -18,7 +18,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: downward-example
-  namespace: default
+  namespace: downward
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt"
 spec:

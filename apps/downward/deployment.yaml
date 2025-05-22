@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: downward-example
-  namespace: default
+  namespace: downward
 spec:
   selector:
     matchLabels:

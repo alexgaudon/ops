@@ -3,38 +3,38 @@ locals {
     k8s-control-plane-1 = {
       ip     = "10.0.0.40"
       role   = "controlplane"
-      region = "pve-1"
+      region = "sorrow"
       zone   = "a"
     }
     k8s-control-plane-2 = {
       ip     = "10.0.0.41"
       role   = "controlplane"
-      region = "pve-2"
+      region = "despair"
       zone   = "a"
     }
     k8s-control-plane-3 = {
       ip     = "10.0.0.42"
       role   = "controlplane"
-      region = "pve-3"
+      region = "bleak"
       zone   = "a"
     }
 
     k8s-worker-1 = {
       ip     = "10.0.0.46"
       role   = "worker"
-      region = "pve-1"
+      region = "sorrow"
       zone   = "a"
     }
     k8s-worker-2 = {
       ip     = "10.0.0.47"
       role   = "worker"
-      region = "pve-2"
+      region = "despair"
       zone   = "a"
     }
     k8s-worker-3 = {
       ip     = "10.0.0.48"
       role   = "worker"
-      region = "pve-3"
+      region = "bleak"
       zone   = "a"
     }
   }
