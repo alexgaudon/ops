@@ -13,15 +13,3 @@ spec:
       services:
         - name: downward-example
           port: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: downward-example
-  namespace: downward
-spec:
-  ports:
-    - port: 8080
-      targetPort: 8080
-  selector:
-    app: downward-example
