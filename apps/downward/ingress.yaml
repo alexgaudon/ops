@@ -7,9 +7,24 @@ spec:
   entryPoints:
     - web
     - websecure
+  tls:
+    secretName: downward-example-tls
   routes:
     - match: Host(`downward.misery.systems`)
       kind: Rule
       services:
         - name: downward-example
           port: 8080
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: downward-example-tls
+  namespace: downward
+spec:
+  secretName: downward-example-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - downward.misery.systems

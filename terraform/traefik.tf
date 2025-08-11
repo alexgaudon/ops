@@ -10,7 +10,7 @@ resource "helm_release" "traefik" {
 
   repository = "https://traefik.github.io/charts"
   chart      = "traefik"
-  version    = "35.2.0"
+  version    = "37.0.0"
 
   set {
     name  = "logs.access.enabled"
@@ -55,6 +55,8 @@ resource "helm_release" "traefik" {
     name  = "ports.websecure.proxyProtocol.insecure"
     value = true
   }
+
+  timeout = 60
 }
 
 resource "kubernetes_manifest" "traefik_https_redirect" {
