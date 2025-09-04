@@ -27,7 +27,7 @@ module "ingress_host" {
   userdata = templatefile(
     "${path.module}/templates/ingress_userdata.sh.tmpl",
     {
-      tailscale_token = var.tailscale_key,
+      tailscale_token = tailscale_tailnet_key.droplet.key,
       caddy_config = jsonencode({
         apps = {
           layer4 = {

@@ -34,15 +34,3 @@ resource "kubernetes_secret" "tailscale_auth" {
     TS_AUTHKEY = tailscale_tailnet_key.k8s.key
   }
 }
-
-module "cluster_router" {
-  source = "./modules/subnet_router"
-
-  count = 3  # Run on multiple nodes for redundancy
-
-  router_name        = "k8s-cluster-router-${count.index}"
-  namespace          = kubernetes_namespace.tailscale.id
-  ts_auth_key_secret = kubernetes_secret.tailscale_auth.metadata[0].name
-  routes             = ["10.0.0.0/24"]  # More specific subnet
-  router_group       = "k8s-cluster-router"
-}
