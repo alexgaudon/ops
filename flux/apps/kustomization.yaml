@@ -4,4 +4,3 @@ kind: Kustomization
 resources:
   - 13ft.yaml
   - downward.yaml
-  - ntfy.yaml
