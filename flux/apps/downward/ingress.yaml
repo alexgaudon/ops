@@ -10,9 +10,9 @@ spec:
   routes:
     - match: Host(`downward.misery.systems`)
       kind: Rule
-      services:
-        - name: downward-example
-          port: 5000
+       services:
+         - name: downward-example
+           port: 8080
   tls:
     secretName: downward-example-tls
 ---
@@ -48,8 +48,8 @@ spec:
         paths:
           - path: /
             pathType: Prefix
-            backend:
-              service:
-                name: downward-example
-                port:
-                  number: 5000
+             backend:
+               service:
+                 name: downward-example
+                 port:
+                   number: 8080
