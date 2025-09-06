@@ -1,0 +1,3 @@
+base-url: https://ntfy.misery.systems
+cache-file: "/var/cache/ntfy/cache.db"
+attachment-cache-dir: "/var/cache/ntfy/attachments"

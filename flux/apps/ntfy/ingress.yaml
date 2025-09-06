@@ -1,0 +1,55 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ntfy
+  namespace: ntfy
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`ntfy.misery.systems`)
+      kind: Rule
+      services:
+        - name: ntfy-svc
+          port: 80
+  tls:
+    secretName: ntfy-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ntfy-tls
+  namespace: ntfy
+spec:
+  secretName: ntfy-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - ntfy.misery.systems
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ntfy
+  namespace: ntfy
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  ingressClassName: "traefik"
+  tls:
+    - hosts:
+        - ntfy.misery.systems
+      secretName: ntfy-tls
+  rules:
+    - host: ntfy.misery.systems
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ntfy-svc
+                port:
+                  number: 80
