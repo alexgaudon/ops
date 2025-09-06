@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: downward-example
   namespace: downward
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: downward-example
@@ -12,43 +13,35 @@ spec:
       labels:
         app: downward-example
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: downward-example
           image: ghcr.io/alexgaudon/downward-api:ae519eedc83b64b666918e78540eabe3f311b4a4
-          env:
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            - name: SERVICE_ACCOUNT
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.serviceAccountName
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          ports:
+            - containerPort: 5000
           # Health checks
           livenessProbe:
             httpGet:
-              path: /health
-              port: 8080
+              path: /
+              port: 5000
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 2
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /ready
-              port: 8080
+              path: /
+              port: 5000
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 2

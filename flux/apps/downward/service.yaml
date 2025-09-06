@@ -3,13 +3,13 @@ kind: Service
 metadata:
   name: downward-example
   namespace: downward
-  annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  labels:
+    app: downward-example
 spec:
+  ports:
+    - port: 5000
+      targetPort: 5000
+      name: http
+      protocol: TCP
   selector:
     app: downward-example
-  ports:
-    - port: 8080
-      targetPort: 8080
-      protocol: TCP
-  type: ClusterIP

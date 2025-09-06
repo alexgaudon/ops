@@ -7,14 +7,14 @@ spec:
   entryPoints:
     - web
     - websecure
-  tls:
-    secretName: downward-example-tls
   routes:
     - match: Host(`downward.misery.systems`)
       kind: Rule
       services:
         - name: downward-example
-          port: 8080
+          port: 5000
+  tls:
+    secretName: downward-example-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -28,3 +28,28 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - downward.misery.systems
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: downward-example
+  namespace: downward
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  ingressClassName: "traefik"
+  tls:
+    - hosts:
+        - downward.misery.systems
+      secretName: downward-example-tls
+  rules:
+    - host: downward.misery.systems
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: downward-example
+                port:
+                  number: 5000
