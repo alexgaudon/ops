@@ -7,8 +7,8 @@ metadata:
     app: downward-example
 spec:
   ports:
-    - port: 5000
-      targetPort: 5000
+    - port: 8080
+      targetPort: 8080
       name: http
       protocol: TCP
   selector:
