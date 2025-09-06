@@ -28,12 +28,12 @@ spec:
             capabilities:
               drop: ["ALL"]
           ports:
-            - containerPort: 5000
+            - containerPort: 8080
           # Health checks
           livenessProbe:
             httpGet:
               path: /
-              port: 5000
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 2
@@ -41,7 +41,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: 5000
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 2
