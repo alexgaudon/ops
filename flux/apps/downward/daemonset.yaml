@@ -21,7 +21,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: downward-example
-          image: ghcr.io/alexgaudon/downward-api:ae519eedc83b64b666918e78540eabe3f311b4a4
+          image: ghcr.io/alexgaudon/downward-api:88d4a140105726966404de6b7723f2aa8dd66e6d
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
