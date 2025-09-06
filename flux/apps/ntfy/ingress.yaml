@@ -28,28 +28,3 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - ntfy.misery.systems
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ntfy
-  namespace: ntfy
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt"
-spec:
-  ingressClassName: "traefik"
-  tls:
-    - hosts:
-        - ntfy.misery.systems
-      secretName: ntfy-tls
-  rules:
-    - host: ntfy.misery.systems
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: ntfy-svc
-                port:
-                  number: 80

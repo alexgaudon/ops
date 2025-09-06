@@ -29,31 +29,6 @@ spec:
   dnsNames:
     - 13ft.misery.systems
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: thirteenft
-  namespace: thirteenft
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt"
-spec:
-  ingressClassName: "traefik"
-  tls:
-    - hosts:
-        - 13ft.misery.systems
-      secretName: thirteenft-tls
-  rules:
-    - host: 13ft.misery.systems
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: thirteenft
-                port:
-                  number: 5000
----
 apiVersion: v1
 kind: Service
 metadata:
