@@ -7,9 +7,9 @@ spec:
   entryPoints:
     - web
     - websecure
-  routes:
-    - match: Host(`downward.misery.systems`)
-      kind: Rule
+   routes:
+     - match: Host(`downward.misery.systems`)
+       kind: Rule
        services:
          - name: downward-example
            port: 8080
@@ -45,9 +45,9 @@ spec:
   rules:
     - host: downward.misery.systems
       http:
-        paths:
-          - path: /
-            pathType: Prefix
+         paths:
+           - path: /
+             pathType: Prefix
              backend:
                service:
                  name: downward-example
