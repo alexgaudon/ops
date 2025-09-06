@@ -48,15 +48,9 @@ spec:
               - path: "annotations"
                 fieldRef:
                   fieldPath: metadata.annotations
-              - path: "node-name"
+              - path: "uid"
                 fieldRef:
-                  fieldPath: spec.nodeName
-              - path: "host-ip"
-                fieldRef:
-                  fieldPath: status.hostIP
-              - path: "pod-ip"
-                fieldRef:
-                  fieldPath: status.podIP
+                  fieldPath: metadata.uid
           # Health checks
           livenessProbe:
             httpGet:
