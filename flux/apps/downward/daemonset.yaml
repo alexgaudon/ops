@@ -1,10 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: downward-example
   namespace: downward
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: downward-example
@@ -29,6 +28,35 @@ spec:
               drop: ["ALL"]
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: podinfo
+              mountPath: /etc/podinfo
+              readOnly: true
+      volumes:
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "name"
+                fieldRef:
+                  fieldPath: metadata.name
+              - path: "namespace"
+                fieldRef:
+                  fieldPath: metadata.namespace
+              - path: "labels"
+                fieldRef:
+                  fieldPath: metadata.labels
+              - path: "annotations"
+                fieldRef:
+                  fieldPath: metadata.annotations
+              - path: "node-name"
+                fieldRef:
+                  fieldPath: spec.nodeName
+              - path: "host-ip"
+                fieldRef:
+                  fieldPath: status.hostIP
+              - path: "pod-ip"
+                fieldRef:
+                  fieldPath: status.podIP
           # Health checks
           livenessProbe:
             httpGet:

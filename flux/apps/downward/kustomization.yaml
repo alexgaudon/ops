@@ -4,5 +4,5 @@ namespace: downward
 
 resources:
   - namespace.yaml
-  - deployment.yaml
+  - daemonset.yaml
   - ingress.yaml
