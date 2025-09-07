@@ -36,6 +36,8 @@ spec:
             - --behind-proxy
             - --web-root=disable
             - --upstream-base-url=https://ntfy.sh
+            - --base-url=https://ntfy.misery.systems
+            - --cache-file=/var/lib/ntfy/cache.db
           # Health checks
           livenessProbe:
             httpGet:
