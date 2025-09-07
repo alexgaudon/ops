@@ -35,23 +35,23 @@ spec:
              - --auth-default-access=deny-all
              - --auth-file=/var/lib/ntfy/auth.db
 
-          # Health checks
-          livenessProbe:
-            httpGet:
-              path: /v1/health
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 2
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /v1/health
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 2
-            failureThreshold: 3
+           # Health checks
+           livenessProbe:
+             httpGet:
+               path: /v1/health
+               port: 80
+             initialDelaySeconds: 5
+             periodSeconds: 10
+             timeoutSeconds: 2
+             failureThreshold: 3
+           readinessProbe:
+             httpGet:
+               path: /v1/health
+               port: 80
+             initialDelaySeconds: 5
+             periodSeconds: 10
+             timeoutSeconds: 2
+             failureThreshold: 3
            # Resource limits and requests
            resources:
              requests:
