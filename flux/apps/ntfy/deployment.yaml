@@ -35,6 +35,7 @@ spec:
             - --auth-default-access=deny-all
             - --behind-proxy
             - --web-root=disable
+            - --upstream-base-url=https://ntfy.sh
           # Health checks
           livenessProbe:
             httpGet:
