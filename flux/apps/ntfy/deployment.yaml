@@ -31,7 +31,6 @@ spec:
             - containerPort: 80
           args:
             - serve
-            - --disable-web
             - --auth-default-access=deny-all
             - --auth-file=/var/lib/ntfy/auth.db
           # Health checks
