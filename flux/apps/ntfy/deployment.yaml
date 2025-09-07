@@ -32,7 +32,7 @@ spec:
           args:
             - serve
             - --auth-file=/var/lib/ntfy/auth.db
-            - --auth-default-deny-all
+            - --auth-default-access=deny-all
             - --behind-proxy
             - --web-root=disable
           # Health checks
