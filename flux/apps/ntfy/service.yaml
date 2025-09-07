@@ -4,9 +4,8 @@ metadata:
   name: ntfy
   namespace: ntfy
 spec:
-  selector:
-    app: ntfy
   ports:
     - port: 80
       targetPort: 80
-  type: ClusterIP
+  selector:
+    app: ntfy
