@@ -29,7 +29,7 @@ spec:
               drop: ["ALL"]
           ports:
             - containerPort: 80
-           args:
+          args:
              - serve
              - --disable-web
              - --auth-default-access=deny-all
@@ -52,22 +52,22 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 2
             failureThreshold: 3
-          # Resource limits and requests
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "100m"
-            limits:
-              memory: "128Mi"
-              cpu: "200m"
+           # Resource limits and requests
+           resources:
+             requests:
+               memory: "64Mi"
+               cpu: "100m"
+             limits:
+               memory: "128Mi"
+               cpu: "200m"
            volumeMounts:
              - name: ntfy-data
                mountPath: /var/lib/ntfy
            # Timeout settings
-            lifecycle:
-              preStop:
-                exec:
-                  command: ["/bin/sleep", "5"]
+           lifecycle:
+             preStop:
+               exec:
+                 command: ["/bin/sleep", "5"]
        volumes:
          - name: ntfy-data
            persistentVolumeClaim:
