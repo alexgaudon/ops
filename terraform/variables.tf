@@ -5,7 +5,7 @@ variable "cluster_name" {
 
 variable "cluster_endpoint" {
   type    = string
-  default = "https://10.0.0.245:6443"
+  default = "https://cluster.ops.misery.systems:6443"
 }
 
 variable "lb_ip_range" {

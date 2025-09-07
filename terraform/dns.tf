@@ -20,3 +20,10 @@ resource "cloudflare_dns_record" "thirteenft" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "ntfy" {
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "ntfy.misery.systems"
+  content = local.ingress_hostname
+  type    = "CNAME"
+  ttl     = 1
+}
