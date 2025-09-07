@@ -4,6 +4,7 @@ metadata:
   name: ntfy-data-pvc
   namespace: ntfy
 spec:
+  storageClassName: nfs-csi
   accessModes:
     - ReadWriteOnce
   resources:
