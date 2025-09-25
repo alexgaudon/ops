@@ -4,7 +4,7 @@ metadata:
   name: ntfy
   namespace: ntfy
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ntfy
