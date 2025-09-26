@@ -20,45 +20,40 @@ resource "helm_release" "metallb" {
 
   timeout = 900 # 15 minutes timeout
 
-  set {
-    name  = "speaker.resources.requests.memory"
-    value = "64Mi"
-  }
-
-  set {
-    name  = "speaker.resources.limits.memory"
-    value = "128Mi"
-  }
-
-  set {
-    name  = "speaker.frr.enabled"
-    value = "false"
-  }
-
-  set {
-    name  = "speaker.frrSpeaker.enabled"
-    value = "false"
-  }
-
-  set {
-    name  = "speaker.reloader.resources.requests.memory"
-    value = "16Mi"
-  }
-
-  set {
-    name  = "speaker.reloader.resources.limits.memory"
-    value = "32Mi"
-  }
-
-  set {
-    name  = "controller.resources.requests.memory"
-    value = "48Mi"
-  }
-
-  set {
-    name  = "controller.resources.limits.memory"
-    value = "96Mi"
-  }
+  set = [
+    {
+      name  = "speaker.resources.requests.memory"
+      value = "64Mi"
+    },
+    {
+      name  = "speaker.resources.limits.memory"
+      value = "128Mi"
+    },
+    {
+      name  = "speaker.frr.enabled"
+      value = "false"
+    },
+    {
+      name  = "speaker.frrSpeaker.enabled"
+      value = "false"
+    },
+    {
+      name  = "speaker.reloader.resources.requests.memory"
+      value = "16Mi"
+    },
+    {
+      name  = "speaker.reloader.resources.limits.memory"
+      value = "32Mi"
+    },
+    {
+      name  = "controller.resources.requests.memory"
+      value = "48Mi"
+    },
+    {
+      name  = "controller.resources.limits.memory"
+      value = "96Mi"
+    }
+  ]
 }
 
 resource "kubectl_manifest" "metallb_ip_pool" {

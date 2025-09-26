@@ -49,3 +49,15 @@ variable "ssh_key_ids" {
 variable "traefik_basic_auth_entry" {
   type = string
 }
+
+variable "aws_access_key" {
+  type = string
+}
+
+variable "aws_secret_key" {
+  type = string
+}
+
+variable "aws_region" {
+  type = string
+}
