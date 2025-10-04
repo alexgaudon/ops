@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - 13ft.yaml
   - downward.yaml
+  - jellyfin.yaml
   - ntfy.yaml
