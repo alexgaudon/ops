@@ -27,3 +27,11 @@ resource "cloudflare_dns_record" "ntfy" {
   type    = "CNAME"
   ttl     = 1
 }
+
+resource "cloudflare_dns_record" "jellyfin" {
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "jellyfin.misery.systems"
+  content = local.ingress_hostname
+  type    = "CNAME"
+  ttl     = 1
+}
