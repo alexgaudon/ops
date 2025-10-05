@@ -7,3 +7,4 @@ resources:
   - jellyfin.yaml
   - ntfy.yaml
   - misery.systems.yaml
+  - stocky.yaml
