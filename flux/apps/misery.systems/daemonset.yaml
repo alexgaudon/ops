@@ -21,7 +21,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: misery-systems-web
-          image: ghcr.io/alexgaudon/misery.systems:latest
+          image: ghcr.io/alexgaudon/misery.systems:1ee6bbeb09d1280dedb264a399706072268fe4e7
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
