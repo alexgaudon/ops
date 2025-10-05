@@ -7,15 +7,12 @@ spec:
   entryPoints:
     - web
     - websecure
-   routes:
-     - match: Host(`downward.misery.systems`)
-       kind: Rule
-       middlewares:
-         - name: traefik-https-redirect
-           namespace: traefik
-       services:
-         - name: downward-example
-           port: 8080
+  routes:
+    - match: Host(`downward.misery.systems`)
+      kind: Rule
+      services:
+        - name: downward-example
+          port: 8080
   tls:
     secretName: downward-example-tls
 ---
