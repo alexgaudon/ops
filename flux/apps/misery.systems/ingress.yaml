@@ -10,9 +10,6 @@ spec:
   routes:
     - match: Host(`misery.systems`)
       kind: Rule
-      middlewares:
-        - name: traefik-https-redirect
-          namespace: traefik
       services:
         - name: misery-systems-web
           port: 4321
