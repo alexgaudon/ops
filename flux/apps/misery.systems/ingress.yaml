@@ -12,7 +12,7 @@ spec:
       kind: Rule
       services:
         - name: misery-systems-web
-          port: 8080
+          port: 4321
   tls:
     secretName: misery-systems-web-tls
 ---
