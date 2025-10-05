@@ -6,3 +6,4 @@ resources:
   - downward.yaml
   - jellyfin.yaml
   - ntfy.yaml
+  - misery.systems.yaml
