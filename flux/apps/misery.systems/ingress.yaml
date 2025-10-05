@@ -7,12 +7,15 @@ spec:
   entryPoints:
     - web
     - websecure
-  routes:
-    - match: Host(`misery.systems`)
-      kind: Rule
-      services:
-        - name: misery-systems-web
-          port: 4321
+   routes:
+     - match: Host(`misery.systems`)
+       kind: Rule
+       middlewares:
+         - name: traefik-https-redirect
+           namespace: traefik
+       services:
+         - name: misery-systems-web
+           port: 4321
   tls:
     secretName: misery-systems-web-tls
 ---

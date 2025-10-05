@@ -7,12 +7,15 @@ spec:
   entryPoints:
     - web
     - websecure
-  routes:
-    - match: Host(`13ft.misery.systems`)
-      kind: Rule
-      services:
-        - name: thirteenft
-          port: 5000
+   routes:
+     - match: Host(`13ft.misery.systems`)
+       kind: Rule
+       middlewares:
+         - name: traefik-https-redirect
+           namespace: traefik
+       services:
+         - name: thirteenft
+           port: 5000
   tls:
     secretName: thirteenft-tls
 ---

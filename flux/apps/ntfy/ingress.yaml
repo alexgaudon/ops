@@ -7,12 +7,15 @@ spec:
   entryPoints:
     - web
     - websecure
-  routes:
-    - match: Host(`ntfy.misery.systems`)
-      kind: Rule
-      services:
-        - name: ntfy
-          port: 80
+   routes:
+     - match: Host(`ntfy.misery.systems`)
+       kind: Rule
+       middlewares:
+         - name: traefik-https-redirect
+           namespace: traefik
+       services:
+         - name: ntfy
+           port: 80
   tls:
     secretName: ntfy-tls
 ---
