@@ -5,6 +5,8 @@ resources:
   - 13ft.yaml
   - downward.yaml
   - jellyfin.yaml
+  - jellyseer.yaml
+  - immich.yaml
   - ntfy.yaml
   - misery.systems.yaml
   - stocky.yaml

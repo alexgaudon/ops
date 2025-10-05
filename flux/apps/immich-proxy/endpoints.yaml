@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: immich
+  namespace: immich-proxy
+subsets:
+  - addresses:
+      - ip: 10.0.0.5
+    ports:
+      - name: http
+        port: 30041
+        protocol: TCP

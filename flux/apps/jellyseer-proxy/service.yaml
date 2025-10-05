@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyseer
+spec:
+  clusterIP: None
+  ports:
+    - name: http
+      port: 5055
+      protocol: TCP
