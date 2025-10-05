@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elephant-shutter-upper
+  namespace: elephant-shutter-upper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elephant-shutter-upper
+  template:
+    metadata:
+      labels:
+        app: elephant-shutter-upper
+    spec:
+      containers:
+        - name: elephant-shutter-upper
+          image: ghcr.io/alexgaudon/elephant-gun:main
+          imagePullPolicy: Always
+
+          env:
+            - name: DISCORD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: elephant-shutter-upper-discord-token
+                  key: DISCORD_TOKEN
+            - name: TARGET_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: elephant-shutter-upper-discord-token
+                  key: TARGET_USER_ID
+            - name: BOT_OWNER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: elephant-shutter-upper-discord-token
+                  key: BOT_OWNER_ID
