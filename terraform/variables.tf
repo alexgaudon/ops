@@ -49,3 +49,7 @@ variable "ssh_key_ids" {
 variable "traefik_basic_auth_entry" {
   type = string
 }
+
+variable "age_secret_key" {
+  type = string
+}
