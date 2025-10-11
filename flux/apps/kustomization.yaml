@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - 13ft.yaml
-  - downward.yaml
   - jellyfin.yaml
   - jellyseer.yaml
   - immich.yaml
