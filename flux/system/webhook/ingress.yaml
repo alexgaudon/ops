@@ -4,8 +4,7 @@ kind: Ingress
 metadata:
   name: webhook-receiver
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    traefik.ingress.kubernetes.io/router.middlewares: traefik-https-redirect@kubernetescrd
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
 spec:
   tls:
@@ -23,3 +22,22 @@ spec:
                 name: webhook-receiver
                 port:
                   number: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: flux-webhook-receiver-cert
+  namespace: flux-system
+spec:
+  secretName: flux-webhook-receiver-ops-misery-systems
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+      - Misery Systems
+  commonName: flux-webhook-receiver.ops.misery.systems
+  dnsNames:
+    - flux-webhook-receiver.ops.misery.systems
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
