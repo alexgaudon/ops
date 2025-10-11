@@ -60,4 +60,12 @@ resource "cloudflare_dns_record" "immich" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "flux_webhook_receiver" {
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "flux-webhook-receiver.ops.misery.systems"
+  content = local.ingress_hostname
+  type    = "CNAME"
+  ttl     = 1
+}
+
 
