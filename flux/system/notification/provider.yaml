@@ -1,0 +1,11 @@
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+
+metadata:
+  name: discord
+
+spec:
+  type: discord
+  username: "Misery Systems™ - Flux"
+  secretRef:
+    name: discord-webhook

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: discord-webhook
+type: Opaque
+stringData:
+    webhook-url: https://discord.com/api/webhooks/1426593815371714678/0XkYGCG14jljOo1sgO16046yApgzhWEaLDwhlO5I7YuuIR2gWHv5q5hBtxR1vuzVZuls
+sops:
+    age:
+        - recipient: age1gn9rqrgxqwkhs2ggpn6tp9yk22rtwczn2j5rxuxcrd2muea09afqnryz0y
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBDNVdXbEQrdS9xSnN4aCts
+            NkQyWG9LOEVQWWlER09nemtCc3NRYitUQ0dzCnkzUllJTTVpTVRQQzVHMlNCd0J6
+            VmlZOHZSL0FwckRXaVl4TXVGQ3ZDMnMKLS0tIFVjSG91NWsrcG9nMk5NeE0ybEg2
+            RHV0NysvZVdWekpjK1VON0hSNk9BOUkKNmJpn8UJW0u7Geh7UwszSLBhvv57SiSe
+            fISeCxLB1Aj8r8/nXuAWXtTt2S29CCfi2pTuY+fojYsq/vMBULb+zA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-10-11T15:34:59Z"
+    mac: ENC[AES256_GCM,data:N40aiZzVu4lzPkI5JWDI4Y8Tds1i1u1MgEUWI31/lWba5tAOGqUxUCHuQlYZzW/1AT60c17lJ4RutYI+geANuLEddJURv3jqjZSeCSQmvj93IkJecihZvsM+ra4Y7xPi7np4UDkwbDqye2xoWqHJhvqfmrLyVSO6D5E6O6uU0GI=,iv:48c5ymmpGYIrob00dL/v9hvUqdPYzHxLKi5pmyYYvbo=,tag:li5QFd9WHnGTa5q1dJYY9g==,type:str]
+    encrypted_regex: ^(data|stringData$
+    version: 3.11.0
