@@ -6,7 +6,7 @@ data "cloudflare_zone" "misery_systems" {
 
 resource "cloudflare_dns_record" "misery_systems" {
   zone_id = data.cloudflare_zone.misery_systems.zone_id
-  name    = "@"
+  name    = "misery.systems"
   content = module.ingress_host.public_ip
   type    = "A"
   ttl     = 1
