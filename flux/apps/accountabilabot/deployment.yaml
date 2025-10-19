@@ -12,22 +12,21 @@ spec:
     metadata:
       labels:
         app: accountabilabot
-    spec:
-       containers:
-         - name: accountabilabot
-           image: ghcr.io/alexgaudon/accountabilabot:latest
-           imagePullPolicy: Always
-           volumeMounts:
-             - name: data
-               mountPath: /app/data/
-
-           env:
-             - name: DISCORD_TOKEN
-               valueFrom:
-                 secretKeyRef:
-                   name: accountabilabot-discord-token
-                   key: DISCORD_TOKEN
-      volumes:
+     spec:
+      containers:
+      - name: accountabilabot
+        image: ghcr.io/alexgaudon/accountabilabot:latest
+        imagePullPolicy: Always
+        volumeMounts:
         - name: data
-          persistentVolumeClaim:
-            claimName: accountabilabot-data-pvc
+          mountPath: /app/data/
+        env:
+        - name: DISCORD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: accountabilabot-discord-token
+              key: DISCORD_TOKEN
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: accountabilabot-data-pvc
