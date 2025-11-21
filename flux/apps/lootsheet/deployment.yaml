@@ -22,10 +22,10 @@ spec:
               name: http
           env:
             - name: PB_DATA_DIR
-              value: /pb_data
+              value: /root/pb_data
           volumeMounts:
             - name: pb-data
-              mountPath: /pb_data
+              mountPath: /root/pb_data
       volumes:
         - name: pb-data
           persistentVolumeClaim:
