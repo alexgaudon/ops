@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - lootsheet.misery.systems
+        - lootsheet.app
       secretName: lootsheet-tls
   rules:
-    - host: lootsheet.misery.systems
+    - host: lootsheet.app
       http:
         paths:
           - path: /
