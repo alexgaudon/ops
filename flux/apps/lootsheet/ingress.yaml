@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lootsheet
+  namespace: lootsheet
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-https-redirect@kubernetescrd
+spec:
+  tls:
+    - hosts:
+        - lootsheet.misery.systems
+      secretName: lootsheet-tls
+  rules:
+    - host: lootsheet.misery.systems
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lootsheet
+                port:
+                  number: 8090
+

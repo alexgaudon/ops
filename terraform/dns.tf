@@ -4,6 +4,12 @@ data "cloudflare_zone" "misery_systems" {
   }
 }
 
+data "cloudflare_zone" "lootsheet" {
+  filter = {
+    name = "lootsheet.app"
+  }
+}
+
 resource "cloudflare_dns_record" "misery_systems" {
   zone_id = data.cloudflare_zone.misery_systems.zone_id
   name    = "misery.systems"
@@ -60,4 +66,10 @@ resource "cloudflare_dns_record" "flux_webhook_receiver" {
   ttl     = 1
 }
 
-
+resource "cloudflare_dns_record" "lootsheet_app" {
+  zone_id = data.cloudflare_zone.lootsheet.zone_id
+  name    = "lootsheet.app"
+  content = local.ingress_hostname
+  type    = "CNAME"
+  ttl     = 1
+}

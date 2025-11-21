@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lootsheet
+  namespace: lootsheet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lootsheet
+  template:
+    metadata:
+      labels:
+        app: lootsheet
+    spec:
+      containers:
+        - name: lootsheet
+          image: ghcr.io/alexgaudon/lootsheet:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8090
+              name: http
+          volumeMounts:
+            - name: pb-data
+              mountPath: /pb_data
+      volumes:
+        - name: pb-data
+          persistentVolumeClaim:
+            claimName: lootsheet-pb-data-pvc
+
