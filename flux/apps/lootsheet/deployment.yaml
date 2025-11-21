@@ -20,6 +20,9 @@ spec:
           ports:
             - containerPort: 8090
               name: http
+          env:
+            - name: PB_DATA_DIR
+              value: /pb_data
           volumeMounts:
             - name: pb-data
               mountPath: /pb_data
