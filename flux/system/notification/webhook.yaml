@@ -4,19 +4,19 @@ metadata:
     name: discord-webhook
 type: Opaque
 stringData:
-    address: https://discord.com/api/webhooks/1426593815371714678/0XkYGCG14jljOo1sgO16046yApgzhWEaLDwhlO5I7YuuIR2gWHv5q5hBtxR1vuzVZuls
+    address: ENC[AES256_GCM,data:y6pZTM7K8j0KGiFCS4qraFkoCyZ2FAaRTj1DZrrLrY+E3BVCydPlizGU7rS+Jw3JgC3YnrC6fYMfZb7sfV87GMwchtl55yA01tkzWRWL68JiYw8Ce3gdTTh159KMMruZdVJu3Me0lruqj31uCWfqzITV4HY8N9EYIA==,iv:WyoQqvmKHEVSLSWM3qZLrABuaNFHvZ34MNISz50vZvw=,tag:7E57bc7GjxgOgGgQZpXESA==,type:str]
 sops:
     age:
         - recipient: age1gn9rqrgxqwkhs2ggpn6tp9yk22rtwczn2j5rxuxcrd2muea09afqnryz0y
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYQVAwTFVrQUFwUWJEeWh5
-            Zm5YcnY3VUR4ODhaQjNBWFh5TmRPeS9JeXhZClZKNmo1emFRSFM2MFpENFBmbjRk
-            YW5NQ0I2R0Q1dmFlU2tKVFE4UEFnTFkKLS0tIGt5TGp6MWNReEhMYVhSSVNJTXA1
-            ZDYxbWNDaE9xRTlpSzB2VmZkRkJ1U1kKKKuvOVGhPPNfreCqHNLvI4fs/gmn60MX
-            aU4VjqnnTfZSpcXOWCp8e9HO9LVACV7Ml1rQ/TZRRGFwknjzqLieGw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyVmxpejFUM0dFc0swMDJF
+            ZlVqdHNxcEdYZjI2OGYzbHptVFYrb0lTaGd3CmxUeWZzWWdkM3VYOFFaY0lYc2gr
+            YzUrRjZFT3kvYmwwV0s1RHREaDM1VXcKLS0tIEhNV2F5cTgxS3NzcFFaYi9CNkNI
+            WmFFcjNHcFUyQnhMMDU0dkdIajM0bE0KBcOnHG2FLowQF4BBXHVBEnRiNUwfwyXE
+            GomLVjVdI2dJeGCrFQIK1C3jM+zYe9Xwyo39sOJm7GGPxFJIRsnh6g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-11T15:40:07Z"
-    mac: ENC[AES256_GCM,data:lhg3bdXnBlWteAbXGAaoFv7V5/PsdWZPzqigzWnbrUIlzArviaKxN/hnhEITQo4SUWlqVjnz4dE3Qsdzu5CZhNUVvYu+cmliVWRxoIcj1OVKxgJYZ6U92Tx/WKjaiqEt1BXX04hshC92YUzzo6V0mhTsFa/ux+Wr7oHv1mAJ8Ds=,iv:mqG990YQWQd1rrdNumyOdUl8f3JrwUNPwy89d9/rUbU=,tag:kgCb0TgdVLsVPABjL6o0sQ==,type:str]
-    encrypted_regex: ^(data|stringData$
+    lastmodified: "2025-11-24T22:42:30Z"
+    mac: ENC[AES256_GCM,data:9HEcdnpNiO7+6sqo/mVL11dkeO/bNWj4pjOv+Ta/B0EGHOn5rlI+KZlKr2mSL8odfF5Bu4jJTBF7w706gRNm7XRbbQFb66WX8Blwtu6x22s8oili9d0RlkJAJMbZBEUKp9JFehVEUtujdWmaHiXgYtVGyWhdae1uXu32v/sTs8U=,iv:N3QAF33MoUABXQFcX2k9T9ZXRp3IWN98DH3MrHBTirw=,tag:J6GbB7HzmSr/eO8lklKV4w==,type:str]
+    encrypted_regex: ^(data|stringData)$
     version: 3.11.0
