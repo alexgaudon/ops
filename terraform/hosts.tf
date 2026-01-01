@@ -1,7 +1,7 @@
 locals {
   proxmox_hosts = {
     "sorrow"  = "10.0.0.6"
-    "despair" = "10.0.0.7"
+    "distress" = "10.0.0.7"
     "bleak"   = "10.0.0.8"
   }
 }

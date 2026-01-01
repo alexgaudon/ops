@@ -9,7 +9,7 @@ locals {
     k8s-control-plane-2 = {
       ip     = "10.0.0.41"
       role   = "controlplane"
-      region = "despair"
+      region = "distress"
       zone   = "a"
     }
     k8s-control-plane-3 = {
@@ -28,7 +28,7 @@ locals {
     k8s-worker-2 = {
       ip     = "10.0.0.47"
       role   = "worker"
-      region = "despair"
+      region = "distress"
       zone   = "a"
     }
     k8s-worker-3 = {
