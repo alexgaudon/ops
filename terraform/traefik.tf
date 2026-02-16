@@ -35,11 +35,11 @@ resource "helm_release" "traefik" {
     },
     {
       name  = "resources.requests.memory"
-      value = "64Mi"
+      value = "512Mi"
     },
     {
       name  = "resources.limits.memory"
-      value = "64Mi"
+      value = "512Mi"
     },
     {
       name  = "ports.web.proxyProtocol.insecure"
