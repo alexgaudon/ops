@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "traefik" {
+resource "kubernetes_namespace_v1" "traefik" {
   metadata {
     name = "traefik"
   }
@@ -6,7 +6,7 @@ resource "kubernetes_namespace" "traefik" {
 
 resource "helm_release" "traefik" {
   name      = "traefik"
-  namespace = kubernetes_namespace.traefik.id
+  namespace = kubernetes_namespace_v1.traefik.id
 
   repository = "https://traefik.github.io/charts"
   chart      = "traefik"
@@ -61,7 +61,7 @@ resource "kubernetes_manifest" "traefik_https_redirect" {
 
     metadata = {
       name      = "https-redirect"
-      namespace = kubernetes_namespace.traefik.id
+      namespace = kubernetes_namespace_v1.traefik.id
     }
 
     spec = {
@@ -73,10 +73,10 @@ resource "kubernetes_manifest" "traefik_https_redirect" {
   }
 }
 
-resource "kubernetes_secret" "traefik_dashboard_auth" {
+resource "kubernetes_secret_v1" "traefik_dashboard_auth" {
   metadata {
     name      = "traefik-dashboard-auth"
-    namespace = kubernetes_namespace.traefik.id
+    namespace = kubernetes_namespace_v1.traefik.id
   }
 
   data = {
@@ -91,12 +91,12 @@ resource "kubernetes_manifest" "traefik_dashboard_auth" {
 
     metadata = {
       name      = "traefik-dashboard-auth"
-      namespace = kubernetes_namespace.traefik.id
+      namespace = kubernetes_namespace_v1.traefik.id
     }
 
     spec = {
       basicAuth = {
-        secret = kubernetes_secret.traefik_dashboard_auth.metadata[0].name
+        secret = kubernetes_secret_v1.traefik_dashboard_auth.metadata[0].name
       }
     }
   }
@@ -117,7 +117,7 @@ resource "kubernetes_manifest" "traefik_dashboard" {
 
     metadata = {
       name      = "traefik-dashboard"
-      namespace = kubernetes_namespace.traefik.id
+      namespace = kubernetes_namespace_v1.traefik.id
     }
 
     spec = {

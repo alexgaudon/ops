@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "tailscale" {
+resource "kubernetes_namespace_v1" "tailscale" {
   metadata {
     name = "tailscale"
 
@@ -24,10 +24,10 @@ resource "tailscale_tailnet_key" "droplet" {
   expiry        = 90 * 24 * 60 * 60
 }
 
-resource "kubernetes_secret" "tailscale_auth" {
+resource "kubernetes_secret_v1" "tailscale_auth" {
   metadata {
     name      = "tailscale-auth"
-    namespace = kubernetes_namespace.tailscale.metadata[0].name
+    namespace = kubernetes_namespace_v1.tailscale.metadata[0].name
   }
 
   data = {

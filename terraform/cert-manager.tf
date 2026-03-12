@@ -1,13 +1,13 @@
-resource "kubernetes_namespace" "cert_manager" {
+resource "kubernetes_namespace_v1" "cert_manager" {
   metadata {
     name = "cert-manager"
   }
 }
 
-resource "kubernetes_secret" "certmanager_cloudflare_token" {
+resource "kubernetes_secret_v1" "certmanager_cloudflare_token" {
   metadata {
     name      = "cloudflare-api-token"
-    namespace = kubernetes_namespace.cert_manager.id
+    namespace = kubernetes_namespace_v1.cert_manager.id
   }
 
   data = {
@@ -17,7 +17,7 @@ resource "kubernetes_secret" "certmanager_cloudflare_token" {
 
 resource "helm_release" "cert_manager" {
   name      = "cert-manager"
-  namespace = kubernetes_namespace.cert_manager.id
+  namespace = kubernetes_namespace_v1.cert_manager.id
 
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
@@ -76,7 +76,7 @@ resource "kubernetes_manifest" "letsencrypt_staging_issuer" {
             dns01 = {
               cloudflare = {
                 apiTokenSecretRef = {
-                  name = kubernetes_secret.certmanager_cloudflare_token.metadata[0].name
+                  name = kubernetes_secret_v1.certmanager_cloudflare_token.metadata[0].name
                   key  = "api-token"
                 }
               }
@@ -120,7 +120,7 @@ resource "kubernetes_manifest" "letsencrypt_issuer" {
             dns01 = {
               cloudflare = {
                 apiTokenSecretRef = {
-                  name = kubernetes_secret.certmanager_cloudflare_token.metadata[0].name
+                  name = kubernetes_secret_v1.certmanager_cloudflare_token.metadata[0].name
                   key  = "api-token"
                 }
               }
