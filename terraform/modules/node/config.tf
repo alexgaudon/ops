@@ -17,7 +17,6 @@ resource "talos_machine_configuration_apply" "node" {
     [
       templatefile(
         "${path.module}/templates/networking.yaml.tmpl", {
-          hostname   = var.hostname
           ip_address = var.ip_address
           gateway    = var.gateway
       }),

@@ -37,11 +37,13 @@ provider "github" {
 
 provider "flux" {
   kubernetes = {
+    config_path = "~/.kube/config"
     host                   = talos_cluster_kubeconfig.config.kubernetes_client_configuration.host
     cluster_ca_certificate = base64decode(talos_cluster_kubeconfig.config.kubernetes_client_configuration.ca_certificate)
     client_certificate     = base64decode(talos_cluster_kubeconfig.config.kubernetes_client_configuration.client_certificate)
     client_key             = base64decode(talos_cluster_kubeconfig.config.kubernetes_client_configuration.client_key)
   }
+  
 
   git = {
     url = "ssh://git@github.com/alexgaudon/ops.git"
