@@ -8,17 +8,13 @@ spec:
     - web
     - websecure
   routes:
-    - match: Host(`misery.systems`)
+    - match: Host(`misery.systems`) && Headers(`X-Forwarded-Proto`, `https`)
       kind: Rule
-      entryPoints:
-        - websecure
       services:
         - name: misery-systems-web
           port: 4321
     - match: Host(`misery.systems`)
       kind: Rule
-      entryPoints:
-        - web
       middlewares:
         - name: https-redirect
           namespace: traefik
