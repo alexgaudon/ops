@@ -18,7 +18,7 @@ terraform {
     }
     tailscale = {
       source  = "tailscale/tailscale"
-      version = "0.28.0"
+      version = "0.29.1"
     }
     flux = {
       source  = "fluxcd/flux"
