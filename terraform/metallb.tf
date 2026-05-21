@@ -22,6 +22,10 @@ resource "helm_release" "metallb" {
 
   set = [
     {
+      name  = "frr-k8s.prometheus.serviceMonitor.enabled"
+      value = "false"
+    },
+    {
       name  = "speaker.resources.requests.memory"
       value = "64Mi"
     },
