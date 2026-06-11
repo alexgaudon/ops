@@ -4,6 +4,7 @@ metadata:
   name: elephant-shutter-upper
   namespace: flux-system
 spec:
+  suspend: true
   interval: 1h0m0s
   sourceRef:
     kind: GitRepository
