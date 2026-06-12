@@ -8,6 +8,5 @@ resources:
   - immich.yaml
   - ntfy.yaml
   - misery.systems.yaml
-  - stocky.yaml
   - stock-corn-stats.yaml
   - lootsheet.yaml
