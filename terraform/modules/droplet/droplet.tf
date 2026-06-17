@@ -45,6 +45,10 @@ resource "digitalocean_droplet" "droplet" {
   size      = data.digitalocean_sizes.droplet_sizes.sizes[0].slug
   ssh_keys  = local.ssh_key_ids
   user_data = var.userdata != "" ? var.userdata : null
+
+  lifecycle {
+    ignore_changes = [image]
+  }
 }
 
 resource "digitalocean_reserved_ip" "ip" {

@@ -22,7 +22,7 @@ module "ingress_host" {
   vcpus  = 1
   memory = 1024
   # TODO: Upgrade to Debian 12
-  distribution_version = "12 x64"
+  distribution_version = "13 x64"
 
   userdata = templatefile(
     "${path.module}/templates/ingress_userdata.sh.tmpl",
