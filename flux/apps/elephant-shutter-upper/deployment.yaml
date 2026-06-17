@@ -34,7 +34,7 @@ spec:
                 secretKeyRef:
                   name: elephant-shutter-upper-discord-token
                   key: BOT_OWNER_ID
-          - name: JACK_USER_ID
+            - name: JACK_USER_ID
               valueFrom:
                 secretKeyRef:
                   name: elephant-shutter-upper-discord-token
