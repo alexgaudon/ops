@@ -34,3 +34,23 @@ spec:
                 secretKeyRef:
                   name: elephant-shutter-upper-discord-token
                   key: BOT_OWNER_ID
+          - name: JACK_USER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: elephant-shutter-upper-discord-token
+                  key: JACK_USER_ID
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: elephant-shutter-upper-discord-token
+                  key: OPENAI_API_KEY
+            - name: OPENAI_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: elephant-shutter-upper-discord-token
+                  key: OPENAI_API_URL
+            - name: OPENAI_MODEL
+              valueFrom:
+                secretKeyRef:
+                  name: elephant-shutter-upper-discord-token
+                  key: OPENAI_MODEL
