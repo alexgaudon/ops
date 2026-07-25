@@ -8,5 +8,6 @@ resources:
   - immich.yaml
   - ntfy.yaml
   - misery.systems.yaml
+  - stock-corn-stats.yaml
   - lootsheet.yaml
   - elephant-shutter-upper.yaml

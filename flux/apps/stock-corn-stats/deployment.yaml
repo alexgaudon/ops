@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock-corn-stats
+  namespace: stock-corn-stats
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stock-corn-stats
+  template:
+    metadata:
+      labels:
+        app: stock-corn-stats
+    spec:
+      containers:
+        - name: stock-corn-stats
+          image: ghcr.io/alexgaudon/stock-corn-stats:latest
+          imagePullPolicy: Always
+
+          env:
+            - name: DISCORD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: stock-corn-stats-discord-token
+                  key: DISCORD_TOKEN
