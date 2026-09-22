@@ -39,8 +39,16 @@ locals {
     }
   }
 
-  talos_version      = "1.12.5"
+  talos_version      = "1.12.5" # the configuration contract, pinned to the version of the cluster creation
   kubernetes_version = "1.33.3"
+
+  # The Image Factory schematic of the nodes. The nodes have no system extensions.
+  talos_schematic_id = "376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba"
+
+  # The installer image. Pin this to the Talos version that the nodes run. The
+  # provider follows the Talos SDK version, so a provider bump changes the
+  # generated default. Change the pin when you upgrade Talos.
+  talos_install_image = "factory.talos.dev/metal-installer/${local.talos_schematic_id}:v1.14.1"
 
   control_plane_nodes = { for k, v in local.cluster_nodes : k => v if v.role == "controlplane" }
   worker_nodes        = { for k, v in local.cluster_nodes : k => v if v.role == "worker" }
@@ -63,8 +71,9 @@ module "control_plane_node" {
   machine_secrets      = talos_machine_secrets.secrets.machine_secrets
   client_configuration = talos_machine_secrets.secrets.client_configuration
 
-  talos_version      = local.talos_version
-  kubernetes_version = local.kubernetes_version
+  talos_version       = local.talos_version
+  kubernetes_version  = local.kubernetes_version
+  talos_install_image = local.talos_install_image
 }
 
 module "worker_node" {
@@ -82,8 +91,9 @@ module "worker_node" {
   machine_secrets      = talos_machine_secrets.secrets.machine_secrets
   client_configuration = talos_machine_secrets.secrets.client_configuration
 
-  talos_version      = local.talos_version
-  kubernetes_version = local.kubernetes_version
+  talos_version       = local.talos_version
+  kubernetes_version  = local.kubernetes_version
+  talos_install_image = local.talos_install_image
 }
 
 

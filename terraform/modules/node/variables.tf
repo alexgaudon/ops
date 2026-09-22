@@ -43,6 +43,11 @@ variable "talos_version" {
   type        = string
 }
 
+variable "talos_install_image" {
+  description = "The installer image for the node. Pin the image to the Talos version that the cluster runs."
+  type        = string
+}
+
 variable "kubernetes_version" {
   description = "Version of Kubernetes to install."
   type        = string

@@ -28,6 +28,11 @@ resource "talos_machine_configuration_apply" "node" {
       ),
       yamlencode({
         machine = {
+          # Pin the installer image. The provider follows the Talos SDK
+          # version, so a provider bump would change the generated default.
+          install = {
+            image = var.talos_install_image
+          }
           certSANs = [
             "cluster.ops.misery.systems"
           ]
