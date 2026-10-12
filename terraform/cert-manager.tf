@@ -31,11 +31,11 @@ resource "helm_release" "cert_manager" {
     },
     {
       name  = "resources.requests.memory"
-      value = "32Mi"
+      value = "64Mi"
     },
     {
       name  = "resources.limits.memory"
-      value = "64Mi"
+      value = "256Mi"
     },
     {
       name  = "cainjector.resources.requests.memory"
