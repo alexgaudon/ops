@@ -21,6 +21,9 @@ module "ingress_host" {
   name   = "ingress"
   vcpus  = 1
   memory = 1024
+  # Pin the size. DigitalOcean removed the plain slug from the tor1 catalog,
+  # so the cheapest-size lookup would otherwise select the pricier intel slug.
+  size = "s-1vcpu-1gb"
   # TODO: Upgrade to Debian 12
   distribution_version = "13 x64"
 

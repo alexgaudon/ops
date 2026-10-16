@@ -42,7 +42,7 @@ resource "digitalocean_droplet" "droplet" {
   name      = var.name
   image     = data.digitalocean_images.distro_images.images[0].slug
   region    = var.region
-  size      = data.digitalocean_sizes.droplet_sizes.sizes[0].slug
+  size      = var.size != "" ? var.size : data.digitalocean_sizes.droplet_sizes.sizes[0].slug
   ssh_keys  = local.ssh_key_ids
   user_data = var.userdata != "" ? var.userdata : null
 

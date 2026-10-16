@@ -13,6 +13,12 @@ variable "vcpus" {
   type        = number
 }
 
+variable "size" {
+  description = "Slug of the droplet size. Leave blank to select the cheapest size that matches the region, vcpus, and memory."
+  type        = string
+  default     = ""
+}
+
 variable "ssh_key_ids" {
   description = "IDs of SSH keys that will be permitted to connect. Leave blank to add all keys in the account."
   type        = list(string)
