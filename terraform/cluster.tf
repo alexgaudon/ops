@@ -48,7 +48,7 @@ locals {
   # The installer image. Pin this to the Talos version that the nodes run. The
   # provider follows the Talos SDK version, so a provider bump changes the
   # generated default. Change the pin when you upgrade Talos.
-  talos_install_image = "factory.talos.dev/metal-installer/${local.talos_schematic_id}:v1.14.1"
+  talos_install_image = "factory.talos.dev/metal-installer/${local.talos_schematic_id}:v1.14.5"
 
   control_plane_nodes = { for k, v in local.cluster_nodes : k => v if v.role == "controlplane" }
   worker_nodes        = { for k, v in local.cluster_nodes : k => v if v.role == "worker" }
