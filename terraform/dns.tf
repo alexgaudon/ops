@@ -42,14 +42,6 @@ resource "cloudflare_dns_record" "jellyfin" {
   ttl     = 1
 }
 
-resource "cloudflare_dns_record" "jellyseer" {
-  zone_id = data.cloudflare_zone.misery_systems.zone_id
-  name    = "jellyseer.misery.systems"
-  content = local.ingress_hostname
-  type    = "CNAME"
-  ttl     = 1
-}
-
 resource "cloudflare_dns_record" "immich" {
   zone_id = data.cloudflare_zone.misery_systems.zone_id
   name    = "immich.misery.systems"
