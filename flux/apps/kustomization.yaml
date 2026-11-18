@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - 13ft.yaml
   - jellyfin.yaml
-  - jellyseer.yaml
   - immich.yaml
   - ntfy.yaml
   - misery.systems.yaml
