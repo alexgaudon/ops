@@ -1,10 +1,3 @@
 # Edge reverse proxy for the compose host.
 # TLS via Let's Encrypt DNS-01 (Cloudflare), so certificates issue
 # without any inbound access to this host.
-
-ntfy.misery.systems {
-	reverse_proxy ntfy:80
-	tls {
-		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
-	}
-}
