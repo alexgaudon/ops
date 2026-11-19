@@ -1,0 +1,10 @@
+services:
+  stocky:
+    image: ghcr.io/alexgaudon/stocky:latest
+    container_name: stocky
+    restart: unless-stopped
+    pull_policy: always
+    env_file:
+      - .env
+    security_opt:
+      - no-new-privileges:true

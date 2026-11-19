@@ -1,0 +1,10 @@
+services:
+  stock-corn-stats:
+    image: ghcr.io/alexgaudon/stock-corn-stats:latest
+    container_name: stock-corn-stats
+    restart: unless-stopped
+    pull_policy: always
+    env_file:
+      - .env
+    security_opt:
+      - no-new-privileges:true
