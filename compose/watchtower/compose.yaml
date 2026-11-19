@@ -1,0 +1,16 @@
+services:
+  watchtower:
+    image: containrrr/watchtower:1.7.1
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      # Only manage containers that opt in via the watchtower.enable label
+      WATCHTOWER_LABEL_ENABLE: "true"
+      # Daily at 04:00 UTC
+      WATCHTOWER_SCHEDULE: "0 0 4 * * *"
+      # Remove superseded images so the disk does not fill
+      WATCHTOWER_CLEANUP: "true"
+    security_opt:
+      - no-new-privileges:true

@@ -8,6 +8,8 @@ services:
       PB_DATA_DIR: /root/pb_data
     expose:
       - "8090"
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
     volumes:
       - ./data:/root/pb_data
     networks:

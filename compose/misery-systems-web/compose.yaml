@@ -9,6 +9,8 @@ services:
       NODE_NAME: apophis
     expose:
       - "4321"
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
     networks:
       - edge
     cap_drop:
