@@ -1,0 +1,32 @@
+(lan_media_proxy) {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+
+	@lan remote_ip 10.0.0.0/24
+	handle @lan {
+		reverse_proxy {args[0]} {
+			# Keep upstream login redirects on the current HTTPS origin.
+			header_down Location ^http://(?:sonarr|radarr|prowlarr)\.internal\.misery\.systems(/.*)$ $1
+		}
+	}
+	handle {
+		respond 403
+	}
+}
+
+bazarr.internal.misery.systems {
+	import lan_media_proxy 10.0.0.5:6767
+}
+
+sonarr.internal.misery.systems {
+	import lan_media_proxy 10.0.0.5:8989
+}
+
+radarr.internal.misery.systems {
+	import lan_media_proxy 10.0.0.5:7878
+}
+
+prowlarr.internal.misery.systems {
+	import lan_media_proxy 10.0.0.5:9696
+}

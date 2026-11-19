@@ -1,5 +1,10 @@
 # Bazarr private proxy pilot
 
+`conf/Caddyfile` holds global options and imports `conf/routes/*.caddy`.
+`conf/routes/media.caddy` groups the four media apps and their shared LAN
+access and TLS rules. Keep future generated dev-proxy config separate from
+these tracked files and import it only on the internal listener.
+
 `compose.pilot.yaml` isn't picked up by the normal Apophis deploy script.
 Bazarr stays on Agnes at `10.0.0.5:6767`. Its new name is
 `bazarr.internal.misery.systems`. Keep `bazarr.amgau.xyz` on NPM during the
