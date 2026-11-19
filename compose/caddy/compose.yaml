@@ -1,0 +1,22 @@
+services:
+  caddy:
+    build: .
+    image: caddy-dns:local
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./data:/data
+      - ./config:/config
+    networks:
+      - edge
+
+networks:
+  edge:
+    name: edge

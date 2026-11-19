@@ -38,3 +38,7 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Compose runtime artifacts: decrypted secrets and app data
+compose/**/.env
+compose/**/data/
