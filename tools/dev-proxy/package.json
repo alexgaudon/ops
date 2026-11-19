@@ -1,0 +1,15 @@
+{
+  "name": "dev-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Manage internal dev previews on Apophis",
+  "scripts": {
+    "up": "node --env-file-if-exists=.env cli.js up",
+    "down": "node --env-file-if-exists=.env cli.js down",
+    "status": "node --env-file-if-exists=.env cli.js status",
+    "add": "node --env-file-if-exists=.env cli.js add",
+    "remove": "node --env-file-if-exists=.env cli.js remove",
+    "list": "node --env-file-if-exists=.env cli.js list"
+  }
+}
