@@ -13,23 +13,25 @@ data "cloudflare_zone" "lootsheet" {
 resource "cloudflare_dns_record" "misery_systems" {
   zone_id = data.cloudflare_zone.misery_systems.zone_id
   name    = "misery.systems"
-  content = module.ingress_host.public_ip
+  content = var.home_public_ipv4
   type    = "A"
+  proxied = false
   ttl     = 1
 }
 
 resource "cloudflare_dns_record" "jellyfin" {
   zone_id = data.cloudflare_zone.misery_systems.zone_id
   name    = "jellyfin.misery.systems"
-  content = local.ingress_hostname
+  content = "misery.systems"
   type    = "CNAME"
+  proxied = false
   ttl     = 1
 }
 
 resource "cloudflare_dns_record" "jellyseer" {
   zone_id = data.cloudflare_zone.misery_systems.zone_id
   name    = "jellyseer.misery.systems"
-  content = "ingress.misery.systems"
+  content = "misery.systems"
   type    = "CNAME"
   proxied = false
   ttl     = 60
@@ -38,8 +40,9 @@ resource "cloudflare_dns_record" "jellyseer" {
 resource "cloudflare_dns_record" "lootsheet_app" {
   zone_id = data.cloudflare_zone.lootsheet.zone_id
   name    = "lootsheet.app"
-  content = local.ingress_hostname
+  content = "misery.systems"
   type    = "CNAME"
+  proxied = false
   ttl     = 1
 }
 

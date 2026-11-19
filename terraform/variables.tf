@@ -41,6 +41,12 @@ variable "digitalocean_token" {
   type = string
 }
 
+variable "home_public_ipv4" {
+  description = "Public IPv4 address of the home ingress, supplied via a local tfvars file."
+  type        = string
+  sensitive   = true
+}
+
 variable "ssh_key_ids" {
   type    = list(string)
   default = []
