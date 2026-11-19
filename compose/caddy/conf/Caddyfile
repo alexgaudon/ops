@@ -33,11 +33,12 @@ jellyfin.misery.systems {
 # the droplet's layer4 forward delivers them today.
 
 lootsheet.app {
-	reverse_proxy {
-		to https://10.0.0.230:443
+	reverse_proxy 10.0.0.230:443 {
 		transport http {
+			tls
 			tls_server_name lootsheet.app
 		}
+		header_up Host {http.request.hostport}
 	}
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
@@ -45,11 +46,12 @@ lootsheet.app {
 }
 
 13ft.misery.systems {
-	reverse_proxy {
-		to https://10.0.0.230:443
+	reverse_proxy 10.0.0.230:443 {
 		transport http {
+			tls
 			tls_server_name 13ft.misery.systems
 		}
+		header_up Host {http.request.hostport}
 	}
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
