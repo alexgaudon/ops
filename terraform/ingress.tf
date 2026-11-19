@@ -1,12 +1,12 @@
 locals {
   proxied_ports = {
-    traefik-http = {
+    edge-http = {
       source_port = 80
-      dest_addr   = "10.0.0.230:80"
+      dest_addr   = "10.0.0.50:80"
     }
-    traefik-https = {
+    edge-https = {
       source_port = 443
-      dest_addr   = "10.0.0.230:443"
+      dest_addr   = "10.0.0.50:443"
     }
   }
 }
@@ -38,8 +38,7 @@ module "ingress_host" {
               listen = [":${v.source_port}"]
               routes = [{
                 handle = [{
-                  handler        = "proxy"
-                  proxy_protocol = "v2"
+                  handler = "proxy"
                   upstreams = [{
                     dial = [v.dest_addr]
                   }]
