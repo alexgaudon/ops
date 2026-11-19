@@ -4,7 +4,7 @@
 	}
 }
 
-preview-api.dev.misery.systems {
+preview-api.internal.misery.systems {
 	import preview_tls
 	@lan remote_ip 10.0.0.0/24
 	handle @lan {

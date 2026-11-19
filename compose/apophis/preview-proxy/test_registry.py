@@ -17,18 +17,19 @@ class RegistryTests(unittest.TestCase):
             "PREVIEW_EXTERNAL_TARGETS": "10.0.0.49:3000",
             "PREVIEW_INTERNAL_TOKEN": "i" * 32,
             "PREVIEW_EXTERNAL_TOKEN": "e" * 32,
-            "PREVIEW_RESERVED_EXTERNAL": "static-app",
         }
         self.api = create_app(self.env, now=lambda: self.clock).test_client()
-        self.lookup = create_app({**self.env, "PREVIEW_ROLE": "lookup"}, now=lambda: self.clock).test_client()
+        self.lookups = {scope: create_app({**self.env, "PREVIEW_ROLE": "lookup", "PREVIEW_LOOKUP_SCOPE": scope},
+                                          now=lambda: self.clock).test_client()
+                        for scope in ("internal", "external")}
 
     def create(self, key="i", **changes):
         body = {"name": "demo", "ip": "10.0.0.49", "port": 3000, "ttl_seconds": 60, **changes}
         return self.api.post("/v1/routes", json=body, headers={"Authorization": f"Bearer {key * 32}"})
 
     def resolve(self, scope="internal", **headers):
-        domain = "dev" if scope == "internal" else "external"
-        return self.lookup.get(f"/resolve/{scope}", headers={"X-Preview-Host": f"demo.{domain}.misery.systems", **headers})
+        domain = "dev" if scope == "internal" else "preview.external"
+        return self.lookups[scope].get(f"/resolve/{scope}", headers={"X-Preview-Host": f"demo.{domain}.misery.systems", **headers})
 
     def test_create_expire_and_reuse(self):
         result = self.create()
@@ -49,14 +50,16 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(self.create(port=True).status_code, 400)
         self.assertEqual(self.create(port=4000).status_code, 403)
         self.assertEqual(self.create(name="preview-api").status_code, 400)
-        self.assertEqual(self.create(key="e", scope="external", name="static-app").status_code, 400)
         self.assertEqual(self.create(key="e", scope="external", port=3001).status_code, 403)
 
     def test_public_password_and_deletion(self):
         self.assertEqual(self.create().status_code, 201)
+        self.assertEqual(self.lookups["external"].get("/resolve/internal", headers={
+            "X-Preview-Host": "demo.dev.misery.systems"}).status_code, 404)
         self.assertEqual(self.resolve("external").status_code, 404)
         public = self.create(key="e", scope="external")
         self.assertEqual(public.status_code, 201)
+        self.assertEqual(public.json["url"], "https://demo.preview.external.misery.systems/")
         self.assertEqual(self.resolve("external").status_code, 401)
         password = public.json["basic_auth"]["password"]
         authorization = "Basic " + base64.b64encode(f"preview:{password}".encode()).decode()
@@ -66,6 +69,34 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(self.api.delete(path, headers={"Authorization": "Bearer " + "e" * 32}).status_code, 204)
         self.assertEqual(self.resolve("external").status_code, 404)
         self.assertEqual(self.resolve().status_code, 204)
+
+    def test_list_routes_is_read_only_and_uncached(self):
+        self.assertEqual(self.api.get("/v1/routes").json, {"scope": "all", "routes": []})
+        empty = self.api.get("/")
+        self.assertEqual(empty.mimetype, "text/html")
+        self.assertIn(b"No active previews", empty.data)
+        self.assertEqual(self.api.get("/v1/routes?scope=invalid").status_code, 400)
+        self.assertEqual(self.api.post("/v1/routes", json={}).status_code, 401)
+        self.assertEqual(self.api.delete("/v1/routes/internal/lan-only").status_code, 401)
+        self.assertEqual(self.create(name="lan-only").status_code, 201)
+        public = self.create(key="e", scope="external").json
+        all_routes = self.api.get("/v1/routes").json["routes"]
+        self.assertEqual({r["scope"] for r in all_routes}, {"internal", "external"})
+        self.assertEqual([r["name"] for r in self.api.get("/v1/routes?scope=internal").json["routes"]], ["lan-only"])
+        page = self.api.get("/?scope=external")
+        self.assertIn(b"Show login", page.data)
+        self.assertIn(public["basic_auth"]["password"].encode(), page.data)
+        self.assertNotIn(b"lan-only", page.data)
+        self.assertIn("frame-ancestors 'none'", page.headers["Content-Security-Policy"])
+        response = self.api.get("/v1/routes?scope=external")
+        self.assertEqual(response.headers["Cache-Control"], "no-store")
+        self.assertEqual(response.headers["Cross-Origin-Resource-Policy"], "same-origin")
+        self.assertEqual([r["basic_auth"] for r in response.json["routes"]], [public["basic_auth"]])
+        self.assertEqual(self.lookups["external"].get("/v1/routes").status_code, 404)
+        self.clock += 60
+        self.assertEqual(self.api.get("/v1/routes").json["routes"], [])
+        replacement = self.create(key="e", scope="external").json
+        self.assertNotEqual(replacement["basic_auth"], public["basic_auth"])
 
 
 if __name__ == "__main__":

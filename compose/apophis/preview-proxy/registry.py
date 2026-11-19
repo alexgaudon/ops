@@ -8,12 +8,13 @@ import secrets
 import sqlite3
 import time
 from contextlib import closing
+from datetime import datetime, timezone
 from pathlib import Path
 
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, render_template, request
 
 
-DOMAINS = {"internal": "dev.misery.systems", "external": "external.misery.systems"}
+DOMAINS = {"internal": "dev.misery.systems", "external": "preview.external.misery.systems"}
 NAME = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?", re.ASCII)
 TOKEN = re.compile(r"[A-Za-z0-9_-]{32,128}", re.ASCII)
 LAN = tuple(map(ipaddress.IPv4Network, ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")))
@@ -53,9 +54,9 @@ def create_app(config=os.environ, *, now=time.time):
     db = Path(config.get("PREVIEW_DB", "/state/routes.sqlite3")).absolute()
     policy = {scope: target_policy(config.get(f"PREVIEW_{scope.upper()}_TARGETS", ""))
               for scope in DOMAINS}
-    reserved = set(filter(None, (n.strip() for n in config.get("PREVIEW_RESERVED_EXTERNAL", "").split(","))))
-    if not all(NAME.fullmatch(name) for name in reserved):
-        raise ValueError("invalid reserved preview name")
+    lookup_scope = config.get("PREVIEW_LOOKUP_SCOPE")
+    if role == "lookup" and lookup_scope not in DOMAINS:
+        raise ValueError("configure the lookup scope")
     tokens = {scope: config.get(f"PREVIEW_{scope.upper()}_TOKEN", "") for scope in DOMAINS}
 
     def connect(*, readonly=False):
@@ -66,12 +67,14 @@ def create_app(config=os.environ, *, now=time.time):
         return any(ip == target and low <= port <= high for target, low, high in policy[scope])
 
     def reserved_name(scope, name):
-        return (scope == "internal" and name == "preview-api") or (scope == "external" and name in reserved)
+        return scope == "internal" and name == "preview-api"
 
     # Auth and lookup responses must not be reused across requests or users.
     @app.after_request
     def disable_cache(response):
         response.headers["Cache-Control"] = "no-store"
+        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+        response.headers["X-Content-Type-Options"] = "nosniff"
         return response
 
     if role == "api":
@@ -79,19 +82,61 @@ def create_app(config=os.environ, *, now=time.time):
                 or (tokens["external"] and not TOKEN.fullmatch(tokens["external"]))
                 or tokens["internal"] == tokens["external"]):
             raise ValueError("set distinct random API tokens (32+ URL-safe characters)")
-        if tokens["external"] and not reserved:
-            raise ValueError("configure the reserved external hostnames before enabling publishing")
         with closing(connect()) as conn, conn:
             conn.execute("""CREATE TABLE IF NOT EXISTS routes (
                 scope TEXT NOT NULL, name TEXT NOT NULL, ip TEXT NOT NULL,
                 port INTEGER NOT NULL, expires INTEGER NOT NULL, password TEXT,
                 PRIMARY KEY (scope, name))""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS external_nonces (
+                name TEXT PRIMARY KEY, nonce TEXT NOT NULL)""")
 
         def authorized(scope):
             value = request.headers.get("Authorization", "").removeprefix("Bearer ")
             token = tokens.get(scope)
             return bool(token and TOKEN.fullmatch(value) and hmac.compare_digest(token, value)
                         and request.headers.get("Authorization", "").startswith("Bearer "))
+
+        def external_password(name, nonce):
+            message = f"preview-password-v1:{name}:{nonce}".encode("ascii")
+            return hmac.digest(tokens["external"].encode("ascii"), message, "sha256").hex()
+
+        @app.get("/")
+        @app.get("/v1/routes")
+        def list_routes():
+            scope = request.args.get("scope")
+            if scope is not None and scope not in DOMAINS:
+                return jsonify(error="invalid scope"), 400
+            # Only internal Caddy can reach this service. Its LAN policy gates reads;
+            # write operations still require the appropriate scope token.
+            with closing(connect(readonly=True)) as conn:
+                rows = conn.execute("""SELECT r.scope, r.name, r.ip, r.port, r.expires, r.password, n.nonce
+                    FROM routes AS r LEFT JOIN external_nonces AS n ON r.scope = 'external' AND r.name = n.name
+                    WHERE (? IS NULL OR r.scope = ?) AND r.expires > ?
+                    ORDER BY r.scope, r.name""", (scope, scope, int(now()))).fetchall()
+            routes = []
+            for route_scope, name, ip, port, expires, password_hash, nonce in rows:
+                if not allowed(route_scope, ip, port):
+                    continue
+                route = {"scope": route_scope, "name": name, "ip": ip, "port": port, "expires_at": expires,
+                         "url": f"https://{name}.{DOMAINS[route_scope]}/"}
+                if route_scope == "external":
+                    password = external_password(name, nonce) if nonce else None
+                    if password and hmac.compare_digest(digest(password), password_hash or ""):
+                        route["basic_auth"] = {"username": "preview", "password": password}
+                    else:
+                        route["basic_auth"] = None
+                routes.append(route)
+            if request.path == "/":
+                for route in routes:
+                    expires = datetime.fromtimestamp(route["expires_at"], timezone.utc)
+                    route.update(expires_iso=expires.isoformat(), expires_label=expires.strftime("%Y-%m-%d %H:%M UTC"))
+                nonce = secrets.token_urlsafe(18)
+                return Response(render_template("previews.html", routes=routes, scope=scope, nonce=nonce),
+                                mimetype="text/html", headers={
+                                    "Content-Security-Policy": f"default-src 'none'; style-src 'nonce-{nonce}'; frame-ancestors 'none'; base-uri 'none'",
+                                    "Referrer-Policy": "no-referrer",
+                                })
+            return jsonify(scope=scope or "all", routes=routes)
 
         @app.post("/v1/routes")
         def create():
@@ -115,16 +160,21 @@ def create_app(config=os.environ, *, now=time.time):
                 return jsonify(error="expected a private IPv4 address"), 400
             if not allowed(scope, ip, port):
                 return jsonify(error="target is not permitted for this scope"), 403
-            password = secrets.token_urlsafe(24) if scope == "external" else None
+            nonce = secrets.token_hex(16) if scope == "external" else None
+            password = external_password(name, nonce) if nonce else None
             expires = int(now()) + ttl
             with closing(connect()) as conn, conn:
                 conn.execute("DELETE FROM routes WHERE expires <= ?", (int(now()),))
+                conn.execute("""DELETE FROM external_nonces WHERE name NOT IN
+                    (SELECT name FROM routes WHERE scope = 'external')""")
                 if conn.execute("SELECT count(*) FROM routes WHERE scope = ?", (scope,)).fetchone()[0] >= 100:
                     return jsonify(error="route limit reached"), 409
                 cursor = conn.execute("INSERT OR IGNORE INTO routes VALUES (?, ?, ?, ?, ?, ?)",
                                       (scope, name, ip, port, expires, digest(password) if password else None))
                 if cursor.rowcount != 1:
                     return jsonify(error="name already registered"), 409
+                if nonce:
+                    conn.execute("INSERT OR REPLACE INTO external_nonces VALUES (?, ?)", (name, nonce))
             result = {"url": f"https://{name}.{DOMAINS[scope]}/", "expires_at": expires}
             if password:
                 result["basic_auth"] = {"username": "preview", "password": password}
@@ -136,6 +186,8 @@ def create_app(config=os.environ, *, now=time.time):
                 return jsonify(error="unauthorized"), 401
             with closing(connect()) as conn, conn:
                 conn.execute("DELETE FROM routes WHERE scope = ? AND name = ?", (scope, name))
+                if scope == "external":
+                    conn.execute("DELETE FROM external_nonces WHERE name = ?", (name,))
             return Response(status=204)
 
     else:
@@ -143,7 +195,7 @@ def create_app(config=os.environ, *, now=time.time):
         def resolve(scope):
             host = request.headers.get("X-Preview-Host", "").lower()
             name, _, domain = host.partition(".")
-            if (scope not in DOMAINS or domain != DOMAINS[scope] or not NAME.fullmatch(name)
+            if (scope != lookup_scope or domain != DOMAINS[scope] or not NAME.fullmatch(name)
                     or reserved_name(scope, name)):
                 return Response(status=404)
             with closing(connect(readonly=True)) as conn:

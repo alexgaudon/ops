@@ -1,0 +1,20 @@
+*.preview.external.misery.systems {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+	route {
+		request_header -X-Preview-Upstream
+		forward_auth preview-public-lookup:8000 {
+			uri /resolve/external
+			header_up X-Preview-Host {host}
+			copy_headers X-Preview-Upstream
+		}
+		@resolved header X-Preview-Upstream *
+		reverse_proxy @resolved {http.request.header.X-Preview-Upstream} {
+			header_up -X-Preview-Upstream
+			header_up -X-Preview-Host
+			header_up -Authorization
+		}
+		respond 404
+	}
+}

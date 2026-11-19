@@ -3,6 +3,7 @@
 # without any inbound access to this host.
 
 import private/*.caddy
+import routes/*.caddy
 
 # --- migrated to this host ----------------------------------------------------
 

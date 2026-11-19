@@ -2,3 +2,5 @@
 !Dockerfile
 !registry.py
 !requirements.txt
+!templates/
+!templates/previews.html

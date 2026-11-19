@@ -1,4 +1,3 @@
-# Explicit opt-in: the normal Apophis updater only loads compose.yaml.
 name: caddy-internal
 services:
   caddy:
@@ -13,6 +12,17 @@ services:
       - ./conf:/etc/caddy:ro
       - ./data:/data
       - caddy-config:/config
+    networks:
+      default:
+        gw_priority: 1
+      preview-control: {}
+      preview-lookup: {}
+
+networks:
+  preview-control:
+    external: true
+  preview-lookup:
+    external: true
 
 volumes:
   caddy-config:

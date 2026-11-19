@@ -80,3 +80,12 @@ resource "cloudflare_dns_record" "dev_wildcard" {
   proxied = false
   ttl     = 60
 }
+
+resource "cloudflare_dns_record" "public_preview_wildcard" {
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "*.preview.external.misery.systems"
+  content = "misery.systems"
+  type    = "CNAME"
+  proxied = false
+  ttl     = 60
+}

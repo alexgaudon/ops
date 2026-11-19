@@ -5,12 +5,13 @@ umask 077
 cd compose/apophis/caddy
 
 work=$(mktemp -d conf/.private-deploy.XXXXXXXX)
-trap 'rm -f -- "$work/routes.caddy" "$work/Caddyfile" "$work/previous"; rmdir -- "$work"' EXIT
+trap 'rm -f -- "$work/routes.caddy" "$work/routes" "$work/Caddyfile" "$work/previous"; rmdir -- "$work"' EXIT
 sops decrypt --input-type binary --output-type binary private.caddy > "$work/routes.caddy"
 
 # Keep the candidate beside Caddy's live config, outside its active import glob.
 # From the candidate directory, import only the freshly decrypted routes.
 sed 's|^import private/\*\.caddy$|import routes.caddy|' conf/Caddyfile > "$work/Caddyfile"
+ln -s ../routes "$work/routes"
 grep -qx 'import routes.caddy' "$work/Caddyfile"
 if ! docker exec caddy caddy validate --adapter caddyfile --config "/etc/caddy/${work#conf/}/Caddyfile" > /dev/null 2>&1; then
   echo 'Public Caddy candidate failed validation; active config unchanged.' >&2

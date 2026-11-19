@@ -15,8 +15,12 @@ services:
       - ./data:/data
       - ./config:/config
     networks:
-      - edge
+      edge:
+        gw_priority: 1
+      preview-public-lookup: {}
 
 networks:
   edge:
     name: edge
+  preview-public-lookup:
+    external: true
