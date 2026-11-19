@@ -26,14 +26,6 @@ resource "cloudflare_dns_record" "jellyfin" {
   ttl     = 1
 }
 
-resource "cloudflare_dns_record" "flux_webhook_receiver" {
-  zone_id = data.cloudflare_zone.misery_systems.zone_id
-  name    = "flux-webhook-receiver.ops.misery.systems"
-  content = local.ingress_hostname
-  type    = "CNAME"
-  ttl     = 1
-}
-
 resource "cloudflare_dns_record" "lootsheet_app" {
   zone_id = data.cloudflare_zone.lootsheet.zone_id
   name    = "lootsheet.app"
