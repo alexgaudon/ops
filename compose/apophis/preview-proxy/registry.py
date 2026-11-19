@@ -66,6 +66,15 @@ def create_app(config=os.environ, *, now=time.time):
     def allowed(scope, ip, port):
         return any(ip == target and low <= port <= high for target, low, high in policy[scope])
 
+    pinned = {}
+    for entry in filter(None, map(str.strip, config.get("PREVIEW_PINNED_INTERNAL", "").split(","))):
+        name, target = entry.split("=", 1)
+        ip, port = target.rsplit(":", 1)
+        ip, port = private_ip(ip), int(port)
+        if not NAME.fullmatch(name) or name == "preview-api" or name in pinned or not allowed("internal", ip, port):
+            raise ValueError("invalid pinned internal preview")
+        pinned[name] = (ip, port)
+
     def reserved_name(scope, name):
         return scope == "internal" and name == "preview-api"
 
@@ -114,8 +123,12 @@ def create_app(config=os.environ, *, now=time.time):
                     WHERE (? IS NULL OR r.scope = ?) AND r.expires > ?
                     ORDER BY r.scope, r.name""", (scope, scope, int(now()))).fetchall()
             routes = []
+            if scope in (None, "internal"):
+                routes.extend({"scope": "internal", "name": name, "ip": ip, "port": port,
+                               "expires_at": None, "url": f"https://{name}.{DOMAINS['internal']}/"}
+                              for name, (ip, port) in sorted(pinned.items()))
             for route_scope, name, ip, port, expires, password_hash, nonce in rows:
-                if not allowed(route_scope, ip, port):
+                if (route_scope == "internal" and name in pinned) or not allowed(route_scope, ip, port):
                     continue
                 route = {"scope": route_scope, "name": name, "ip": ip, "port": port, "expires_at": expires,
                          "url": f"https://{name}.{DOMAINS[route_scope]}/"}
@@ -128,6 +141,8 @@ def create_app(config=os.environ, *, now=time.time):
                 routes.append(route)
             if request.path == "/":
                 for route in routes:
+                    if route["expires_at"] is None:
+                        continue
                     expires = datetime.fromtimestamp(route["expires_at"], timezone.utc)
                     route.update(expires_iso=expires.isoformat(), expires_label=expires.strftime("%Y-%m-%d %H:%M UTC"))
                 nonce = secrets.token_urlsafe(18)
@@ -152,6 +167,8 @@ def create_app(config=os.environ, *, now=time.time):
             ttl = body.get("ttl_seconds", 3600)
             if not isinstance(name, str) or not NAME.fullmatch(name) or reserved_name(scope, name):
                 return jsonify(error="invalid or reserved name"), 400
+            if scope == "internal" and name in pinned:
+                return jsonify(error="preview is managed by server configuration"), 409
             if type(port) is not int or type(ttl) is not int or not 60 <= ttl <= 86400:
                 return jsonify(error="invalid port or TTL (60–86400 seconds)"), 400
             try:
@@ -184,6 +201,8 @@ def create_app(config=os.environ, *, now=time.time):
         def delete(scope, name):
             if not authorized(scope):
                 return jsonify(error="unauthorized"), 401
+            if scope == "internal" and name in pinned:
+                return jsonify(error="preview is managed by server configuration"), 409
             with closing(connect()) as conn, conn:
                 conn.execute("DELETE FROM routes WHERE scope = ? AND name = ?", (scope, name))
                 if scope == "external":
@@ -198,6 +217,9 @@ def create_app(config=os.environ, *, now=time.time):
             if (scope != lookup_scope or domain != DOMAINS[scope] or not NAME.fullmatch(name)
                     or reserved_name(scope, name)):
                 return Response(status=404)
+            if scope == "internal" and name in pinned:
+                ip, port = pinned[name]
+                return Response(status=204, headers={"X-Preview-Upstream": f"{ip}:{port}"})
             with closing(connect(readonly=True)) as conn:
                 row = conn.execute("SELECT ip, port, password FROM routes WHERE scope = ? AND name = ? AND expires > ?",
                                    (scope, name, int(now()))).fetchone()

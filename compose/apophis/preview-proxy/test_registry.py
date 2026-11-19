@@ -70,6 +70,21 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(self.resolve("external").status_code, 404)
         self.assertEqual(self.resolve().status_code, 204)
 
+    def test_pinned_internal_route_does_not_expire(self):
+        env = {**self.env, "PREVIEW_PINNED_INTERNAL": "demo=10.0.0.49:3000"}
+        self.api = create_app(env, now=lambda: self.clock).test_client()
+        self.lookups["internal"] = create_app({**env, "PREVIEW_ROLE": "lookup",
+                                               "PREVIEW_LOOKUP_SCOPE": "internal"},
+                                              now=lambda: self.clock).test_client()
+        self.assertEqual(self.create().status_code, 409)
+        auth = {"Authorization": "Bearer " + "i" * 32}
+        self.assertEqual(self.api.delete("/v1/routes/internal/demo", headers=auth).status_code, 409)
+        self.clock += 86401
+        self.assertEqual(self.resolve().headers["X-Preview-Upstream"], "10.0.0.49:3000")
+        self.assertIsNone(self.api.get("/v1/routes").json["routes"][0]["expires_at"])
+        self.assertIn(b"Never (pinned)", self.api.get("/").data)
+        self.assertEqual(self.resolve("external").status_code, 404)
+
     def test_list_routes_is_read_only_and_uncached(self):
         self.assertEqual(self.api.get("/v1/routes").json, {"scope": "all", "routes": []})
         empty = self.api.get("/")

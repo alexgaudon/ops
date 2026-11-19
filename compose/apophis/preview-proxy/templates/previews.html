@@ -64,7 +64,8 @@
         </div>
         <div><span class="label">Target</span><code>{{ route.ip }}:{{ route.port }}</code></div>
         <div>
-          <span class="label">Expires</span><time datetime="{{ route.expires_iso }}">{{ route.expires_label }}</time>
+          <span class="label">Expires</span>
+          {% if route.expires_at is none %}<span>Never (pinned)</span>{% else %}<time datetime="{{ route.expires_iso }}">{{ route.expires_label }}</time>{% endif %}
           {% if route.scope == 'external' %}
             {% if route.basic_auth %}
             <details>

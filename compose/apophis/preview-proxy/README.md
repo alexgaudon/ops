@@ -30,6 +30,11 @@ hour; set `ttl_seconds` from 60 to 86400. Delete with
 `DELETE /v1/routes/<scope>/<name>` using the same scope's token. Expiry and deletion
 block new requests; they do not close an already-open stream.
 
+Long-lived internal routes can be pinned with `PREVIEW_PINNED_INTERNAL` in the
+registry Compose configuration. Pinned targets must still be allowlisted. They
+appear with `expires_at: null` and are changed by redeploying the configuration,
+not by API registration or deletion.
+
 On the LAN, `GET /` shows the preview dashboard and `GET /v1/routes` lists the
 same active previews as JSON. Neither requires a token. External credentials
 are behind “Show login” on the dashboard and in `basic_auth` in JSON. Pass `?scope=internal` or
@@ -47,7 +52,8 @@ Use `sudo compose-update --previews` to deploy just the registry and both Caddy
 stacks without updating the other applications.
 
 API tokens are SOPS-encrypted. The default internal target is the Mac on ports
-`3000–3999`. Internal requests must have a source IP in `10.0.0.0/24` as seen by
+`3000–3999`, plus the existing dev-server ports `4321`, `30400`, `40004`, and
+`40005`. Internal requests must have a source IP in `10.0.0.0/24` as seen by
 Caddy. Verify the source observed over Tailscale before changing this policy.
 
 External previews use their own DNS wildcard and TLS site. To permit publishing,
