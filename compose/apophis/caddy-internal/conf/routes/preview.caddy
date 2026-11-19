@@ -1,0 +1,40 @@
+(preview_tls) {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+}
+
+preview-api.dev.misery.systems {
+	import preview_tls
+	@lan remote_ip 10.0.0.0/24
+	handle @lan {
+		reverse_proxy preview-api:8000
+	}
+	handle {
+		respond 403
+	}
+}
+
+*.dev.misery.systems {
+	import preview_tls
+	@lan remote_ip 10.0.0.0/24
+	handle @lan {
+		route {
+			request_header -X-Preview-Upstream
+			forward_auth preview-lookup:8000 {
+				uri /resolve/internal
+				header_up X-Preview-Host {host}
+				copy_headers X-Preview-Upstream
+			}
+			@resolved header X-Preview-Upstream *
+			reverse_proxy @resolved {http.request.header.X-Preview-Upstream} {
+				header_up -X-Preview-Upstream
+				header_up -X-Preview-Host
+			}
+			respond 404
+		}
+	}
+	handle {
+		respond 403
+	}
+}

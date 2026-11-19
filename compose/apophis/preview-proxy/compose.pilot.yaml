@@ -1,0 +1,54 @@
+name: preview-proxy
+x-service: &service
+  build: .
+  image: preview-registry:local
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+
+x-policy: &policy
+  PREVIEW_INTERNAL_TARGETS: ${PREVIEW_INTERNAL_TARGETS:-10.0.0.49:3000-3999}
+  PREVIEW_EXTERNAL_TARGETS: ${PREVIEW_EXTERNAL_TARGETS:-}
+  PREVIEW_RESERVED_EXTERNAL: ${PREVIEW_RESERVED_EXTERNAL:-}
+
+services:
+  preview-api:
+    <<: *service
+    environment:
+      <<: *policy
+      PREVIEW_ROLE: api
+      PREVIEW_INTERNAL_TOKEN: ${PREVIEW_INTERNAL_TOKEN:?set PREVIEW_INTERNAL_TOKEN}
+      PREVIEW_EXTERNAL_TOKEN: ${PREVIEW_EXTERNAL_TOKEN:-}
+    volumes:
+      - state:/state
+    networks: [control]
+    healthcheck:
+      test: [CMD, python, -c, "import socket; socket.create_connection(('127.0.0.1', 8000), 2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  preview-lookup:
+    <<: *service
+    depends_on:
+      preview-api:
+        condition: service_healthy
+    environment:
+      <<: *policy
+      PREVIEW_ROLE: lookup
+    volumes:
+      - state:/state:ro
+    networks: [lookup]
+
+networks:
+  control:
+    name: preview-control
+    internal: true
+  lookup:
+    name: preview-lookup
+    internal: true
+
+volumes:
+  state:

@@ -1,0 +1,14 @@
+# Use with compose.pilot.yaml only after starting the preview registry.
+services:
+  caddy:
+    networks:
+      default:
+        gw_priority: 1
+      preview-control: {}
+      preview-lookup: {}
+
+networks:
+  preview-control:
+    external: true
+  preview-lookup:
+    external: true

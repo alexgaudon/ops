@@ -70,3 +70,13 @@ resource "cloudflare_dns_record" "external_wildcard" {
   proxied = false
   ttl     = 60
 }
+
+# The preview API and internal previews terminate only on internal Caddy.
+resource "cloudflare_dns_record" "dev_wildcard" {
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "*.dev.misery.systems"
+  content = "10.0.0.51"
+  type    = "A"
+  proxied = false
+  ttl     = 60
+}
