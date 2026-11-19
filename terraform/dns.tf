@@ -60,3 +60,13 @@ resource "cloudflare_dns_record" "internal_wildcard" {
   proxied = false
   ttl     = 60
 }
+
+# Public DNS for protected routes; Caddy only proxies explicitly configured hosts.
+resource "cloudflare_dns_record" "external_wildcard" {
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "*.external.misery.systems"
+  content = "misery.systems"
+  type    = "CNAME"
+  proxied = false
+  ttl     = 60
+}

@@ -2,6 +2,8 @@
 # TLS via Let's Encrypt DNS-01 (Cloudflare), so certificates issue
 # without any inbound access to this host.
 
+import private/*.caddy
+
 # --- migrated to this host ----------------------------------------------------
 
 misery.systems {

@@ -42,3 +42,6 @@ terraform.rc
 # Compose runtime artifacts: decrypted secrets and app data
 compose/**/.env
 compose/**/data/
+/compose/apophis/caddy/conf/private/
+/compose/apophis/caddy/conf/.private-deploy.*/
+/compose/apophis/caddy/.decrypted~private.caddy
