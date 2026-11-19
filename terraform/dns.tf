@@ -33,3 +33,13 @@ resource "cloudflare_dns_record" "lootsheet_app" {
   type    = "CNAME"
   ttl     = 1
 }
+
+# Public DNS returns a LAN-only address; Cloudflare does not proxy it.
+resource "cloudflare_dns_record" "internal_wildcard" {
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "*.internal.misery.systems"
+  content = "10.0.0.51"
+  type    = "A"
+  proxied = false
+  ttl     = 60
+}

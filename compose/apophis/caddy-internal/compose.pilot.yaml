@@ -1,0 +1,18 @@
+# Explicit opt-in: the normal Apophis updater only loads compose.yaml.
+name: caddy-internal
+services:
+  caddy:
+    build: .
+    image: caddy-internal:local
+    restart: unless-stopped
+    ports:
+      - "10.0.0.51:${INTERNAL_CADDY_PORT:-443}:443/tcp"
+    environment:
+      CLOUDFLARE_DNS_API_TOKEN: ${CLOUDFLARE_DNS_API_TOKEN:?set the Cloudflare DNS API token}
+    volumes:
+      - ./conf:/etc/caddy:ro
+      - ./data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-config:

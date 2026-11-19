@@ -1,0 +1,21 @@
+{
+	admin off
+	auto_https disable_redirects
+	servers {
+		protocols h1 h2
+	}
+}
+
+bazarr.internal.misery.systems {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+
+	@lan remote_ip 10.0.0.0/24
+	handle @lan {
+		reverse_proxy 10.0.0.5:6767
+	}
+	handle {
+		respond 403
+	}
+}
