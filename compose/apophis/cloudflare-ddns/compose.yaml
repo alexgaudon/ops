@@ -1,0 +1,41 @@
+x-ddns: &ddns
+  image: ghcr.io/favonia/cloudflare-ddns@sha256:345b41895a8846d74c62d30bd27e61101a754f8ab8da10c68115823883803afb
+  restart: always
+  user: "65534:65534"
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+
+x-environment: &environment
+  PROXIED: "false"
+  IP6_PROVIDER: none
+  DELETE_ON_STOP: "false"
+
+services:
+  amgau-root:
+    <<: *ddns
+    environment:
+      <<: *environment
+      IP4_DOMAINS: amgau.com
+      CLOUDFLARE_API_TOKEN: ${AMGAU_ROOT_API_KEY:?set AMGAU_ROOT_API_KEY}
+
+  amgau-wildcard:
+    <<: *ddns
+    environment:
+      <<: *environment
+      IP4_DOMAINS: "*.amgau.com"
+      CLOUDFLARE_API_TOKEN: ${AMGAU_WILDCARD_API_KEY:?set AMGAU_WILDCARD_API_KEY}
+
+  amgau-vpn:
+    <<: *ddns
+    environment:
+      <<: *environment
+      IP4_DOMAINS: vpn.amgau.com
+      CLOUDFLARE_API_TOKEN: ${AMGAU_VPN_API_KEY:?set AMGAU_VPN_API_KEY}
+
+  misery-root:
+    <<: *ddns
+    environment:
+      <<: *environment
+      IP4_DOMAINS: misery.systems
+      CLOUDFLARE_API_TOKEN: ${MISERY_ROOT_API_KEY:?set MISERY_ROOT_API_KEY}

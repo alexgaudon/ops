@@ -17,6 +17,11 @@ resource "cloudflare_dns_record" "misery_systems" {
   type    = "A"
   proxied = false
   ttl     = 1
+
+  lifecycle {
+    # DDNS on Apophis owns the address; home_public_ipv4 bootstraps the record.
+    ignore_changes = [content]
+  }
 }
 
 resource "cloudflare_dns_record" "jellyfin" {
