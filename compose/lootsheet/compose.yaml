@@ -1,0 +1,20 @@
+services:
+  lootsheet:
+    image: ghcr.io/alexgaudon/lootsheet:latest
+    container_name: lootsheet
+    restart: unless-stopped
+    pull_policy: always
+    environment:
+      PB_DATA_DIR: /root/pb_data
+    expose:
+      - "8090"
+    volumes:
+      - ./data:/root/pb_data
+    networks:
+      - edge
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  edge:
+    external: true

@@ -6,5 +6,4 @@ resources:
   - immich.yaml
   - stocky.yaml
   - stock-corn-stats.yaml
-  - lootsheet.yaml
   - elephant-shutter-upper.yaml

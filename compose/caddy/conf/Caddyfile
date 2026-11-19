@@ -11,6 +11,13 @@ misery.systems {
 	}
 }
 
+lootsheet.app {
+	reverse_proxy lootsheet:8090
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+}
+
 # --- external backends, previously proxied through the cluster ----------------
 
 immich.misery.systems {
@@ -22,24 +29,6 @@ immich.misery.systems {
 
 jellyfin.misery.systems {
 	reverse_proxy 10.0.0.5:8096
-	tls {
-		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
-	}
-}
-
-# --- still on the cluster, forwarded to traefik until they migrate -----------
-# Traefik's web entrypoint force-redirects to https by scheme, so cluster
-# routes must enter through websecure (443) with the right SNI, the same way
-# the droplet's layer4 forward delivers them today.
-
-lootsheet.app {
-	reverse_proxy 10.0.0.230:443 {
-		transport http {
-			tls
-			tls_server_name lootsheet.app
-		}
-		header_up Host {http.request.hostport}
-	}
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
 	}
