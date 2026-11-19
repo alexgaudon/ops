@@ -1,3 +1,44 @@
 # Edge reverse proxy for the compose host.
 # TLS via Let's Encrypt DNS-01 (Cloudflare), so certificates issue
 # without any inbound access to this host.
+
+# --- migrated to this host ----------------------------------------------------
+
+misery.systems {
+	reverse_proxy misery-systems-web:4321
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+}
+
+# --- external backends, previously proxied through the cluster ----------------
+
+immich.misery.systems {
+	reverse_proxy 10.0.0.5:30041
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+}
+
+jellyfin.misery.systems {
+	reverse_proxy 10.0.0.5:8096
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+}
+
+# --- still on the cluster, forwarded to traefik until they migrate -----------
+
+lootsheet.app {
+	reverse_proxy 10.0.0.230:80
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+}
+
+13ft.misery.systems {
+	reverse_proxy 10.0.0.230:80
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+}

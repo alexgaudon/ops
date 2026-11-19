@@ -1,0 +1,21 @@
+services:
+  misery-systems-web:
+    image: ghcr.io/alexgaudon/misery.systems:latest
+    container_name: misery-systems-web
+    restart: unless-stopped
+    pull_policy: always
+    user: "1000:1000"
+    environment:
+      NODE_NAME: apophis
+    expose:
+      - "4321"
+    networks:
+      - edge
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  edge:
+    external: true
