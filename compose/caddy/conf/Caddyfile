@@ -44,16 +44,3 @@ lootsheet.app {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
 	}
 }
-
-13ft.misery.systems {
-	reverse_proxy 10.0.0.230:443 {
-		transport http {
-			tls
-			tls_server_name 13ft.misery.systems
-		}
-		header_up Host {http.request.hostport}
-	}
-	tls {
-		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
-	}
-}
