@@ -25,11 +25,11 @@ resource "tailscale_tailnet_key" "droplet" {
   tags          = ["tag:edge"]
 }
 
-# Tailnet access policy: the public edge droplet may reach exactly the two
-# forward targets (the compose host's Caddy, and traefik's websecure until
-# lootsheet and 13ft leave the cluster) and nothing else - a compromised
-# droplet sees two ports on two hosts instead of the whole LAN. Member
-# devices keep unrestricted access, including reaching the droplet itself.
+# Tailnet access policy: the public edge droplet may reach exactly one
+# target - the compose host's Caddy edge (10.0.0.50:80,443) - and nothing
+# else. A compromised droplet sees one port on one host instead of the
+# whole LAN. Member devices keep unrestricted access, including reaching
+# the droplet itself.
 resource "tailscale_acl" "acl" {
   overwrite_existing_content = true
 
@@ -40,7 +40,7 @@ resource "tailscale_acl" "acl" {
       },
 
       "acls": [
-        {"action": "accept", "src": ["tag:edge"], "dst": ["10.0.0.50/32:80,443", "10.0.0.230/32:80,443"]},
+        {"action": "accept", "src": ["tag:edge"], "dst": ["10.0.0.50/32:80,443"]},
         {"action": "accept", "src": ["autogroup:member"], "dst": ["*:*"]},
       ],
 
