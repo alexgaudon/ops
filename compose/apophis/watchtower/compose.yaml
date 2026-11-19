@@ -6,6 +6,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
+      # containrrr 1.7.1 predates Docker 29, whose daemon rejects clients
+      # older than API 1.40 - pin the client version explicitly
+      DOCKER_API_VERSION: "1.44"
       # Only manage containers that opt in via the watchtower.enable label
       WATCHTOWER_LABEL_ENABLE: "true"
       # Daily at 04:00 UTC
