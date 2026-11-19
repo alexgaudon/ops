@@ -102,14 +102,6 @@ resource "kubernetes_manifest" "traefik_dashboard_auth" {
   }
 }
 
-resource "cloudflare_dns_record" "traefik_dashboard" {
-  zone_id = data.cloudflare_zone.misery_systems.zone_id
-  name    = "traefik.ops.misery.systems"
-  content = local.ingress_hostname
-  type    = "CNAME"
-  ttl     = 1
-}
-
 resource "kubernetes_manifest" "traefik_dashboard" {
   manifest = {
     apiVersion = "traefik.io/v1alpha1"

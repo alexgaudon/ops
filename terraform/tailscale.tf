@@ -17,30 +17,13 @@ resource "tailscale_tailnet_key" "k8s" {
   expiry        = 90 * 24 * 60 * 60
 }
 
-resource "tailscale_tailnet_key" "droplet" {
-  reusable      = true
-  ephemeral     = true
-  preauthorized = true
-  expiry        = 90 * 24 * 60 * 60
-  tags          = ["tag:edge"]
-}
-
-# Tailnet access policy: the public edge droplet may reach exactly one
-# target - the compose host's Caddy edge (10.0.0.50:80,443) - and nothing
-# else. A compromised droplet sees one port on one host instead of the
-# whole LAN. Member devices keep unrestricted access, including reaching
-# the droplet itself.
+# Keep private access for tailnet members.
 resource "tailscale_acl" "acl" {
   overwrite_existing_content = true
 
   acl = <<-EOT
     {
-      "tagOwners": {
-        "tag:edge": ["autogroup:member"],
-      },
-
       "acls": [
-        {"action": "accept", "src": ["tag:edge"], "dst": ["10.0.0.50/32:80,443"]},
         {"action": "accept", "src": ["autogroup:member"], "dst": ["*:*"]},
       ],
 
@@ -49,14 +32,6 @@ resource "tailscale_acl" "acl" {
       ],
     }
   EOT
-}
-
-# Tag the current edge droplet so the ACL binds to it. Future droplet
-# recreations inherit the tag from the auth key above; this resource keeps
-# the live device id pinned regardless.
-resource "tailscale_device_tags" "edge_droplet" {
-  device_id = "222748365225131"
-  tags      = ["tag:edge"]
 }
 
 resource "kubernetes_secret_v1" "tailscale_auth" {
