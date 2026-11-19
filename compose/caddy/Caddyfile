@@ -28,16 +28,29 @@ jellyfin.misery.systems {
 }
 
 # --- still on the cluster, forwarded to traefik until they migrate -----------
+# Traefik's web entrypoint force-redirects to https by scheme, so cluster
+# routes must enter through websecure (443) with the right SNI, the same way
+# the droplet's layer4 forward delivers them today.
 
 lootsheet.app {
-	reverse_proxy 10.0.0.230:80
+	reverse_proxy {
+		to https://10.0.0.230:443
+		transport http {
+			tls_server_name lootsheet.app
+		}
+	}
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
 	}
 }
 
 13ft.misery.systems {
-	reverse_proxy 10.0.0.230:80
+	reverse_proxy {
+		to https://10.0.0.230:443
+		transport http {
+			tls_server_name 13ft.misery.systems
+		}
+	}
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
 	}
