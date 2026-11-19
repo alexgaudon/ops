@@ -11,7 +11,7 @@ services:
       - path: .env
         required: false
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./conf:/etc/caddy
       - ./data:/data
       - ./config:/config
     networks:
