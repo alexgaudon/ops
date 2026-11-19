@@ -20,13 +20,6 @@ lootsheet.app {
 
 # --- external backends, previously proxied through the cluster ----------------
 
-immich.misery.systems {
-	reverse_proxy 10.0.0.5:30041
-	tls {
-		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
-	}
-}
-
 jellyfin.misery.systems {
 	reverse_proxy 10.0.0.5:8096
 	tls {
