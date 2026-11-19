@@ -26,6 +26,15 @@ resource "cloudflare_dns_record" "jellyfin" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "jellyseer" {
+  zone_id = data.cloudflare_zone.misery_systems.zone_id
+  name    = "jellyseer.misery.systems"
+  content = "ingress.misery.systems"
+  type    = "CNAME"
+  proxied = false
+  ttl     = 60
+}
+
 resource "cloudflare_dns_record" "lootsheet_app" {
   zone_id = data.cloudflare_zone.lootsheet.zone_id
   name    = "lootsheet.app"

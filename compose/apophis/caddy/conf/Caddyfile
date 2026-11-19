@@ -26,3 +26,34 @@ jellyfin.misery.systems {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
 	}
 }
+
+# Keep saved clients working without redirecting them to the preferred name.
+jellyfin.amgau.com {
+	# The old proxy restricts metrics. Keep them off this compatibility route.
+	@metrics path /metrics /metrics/*
+	respond @metrics 403
+	header {
+		X-Frame-Options SAMEORIGIN
+		X-XSS-Protection 0
+		X-Content-Type-Options nosniff
+	}
+	reverse_proxy 10.0.0.5:8096
+	tls {
+		dns cloudflare {env.CLOUDFLARE_AMGAU_DNS_API_TOKEN}
+	}
+}
+
+jellyseer.misery.systems {
+	reverse_proxy 10.0.0.5:5055
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+}
+
+# Keep the old requests URL working without a redirect.
+jellyseer.amgau.com {
+	reverse_proxy 10.0.0.5:5055
+	tls {
+		dns cloudflare {env.CLOUDFLARE_AMGAU_DNS_API_TOKEN}
+	}
+}
