@@ -1,4 +1,4 @@
 traffic.internal.misery.systems {
 	log_skip
-	import lan_app_proxy caddy-traffic:8080
+	import lan_ui_proxy caddy-traffic:8080
 }

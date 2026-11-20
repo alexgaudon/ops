@@ -1,0 +1,18 @@
+services:
+  homelab-home:
+    image: python:3.13-alpine
+    command: ["python", "-B", "/app/server.py"]
+    user: "65534:65534"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    volumes:
+      - ./server.py:/app/server.py:ro
+      - ./site:/app/site:ro
+    networks: [internal-caddy]
+
+networks:
+  internal-caddy:
+    external: true
+    name: caddy-internal_default

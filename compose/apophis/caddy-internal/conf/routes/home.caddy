@@ -1,0 +1,3 @@
+home.internal.misery.systems {
+	import lan_ui_proxy homelab-home:8080
+}

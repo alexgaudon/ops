@@ -148,7 +148,7 @@ def create_app(config=os.environ, *, now=time.time):
                 nonce = secrets.token_urlsafe(18)
                 return Response(render_template("previews.html", routes=routes, scope=scope, nonce=nonce),
                                 mimetype="text/html", headers={
-                                    "Content-Security-Policy": f"default-src 'none'; style-src 'nonce-{nonce}'; frame-ancestors 'none'; base-uri 'none'",
+                                    "Content-Security-Policy": f"default-src 'none'; style-src 'self' 'nonce-{nonce}'; frame-ancestors 'none'; base-uri 'none'",
                                     "Referrer-Policy": "no-referrer",
                                 })
             return jsonify(scope=scope or "all", routes=routes)

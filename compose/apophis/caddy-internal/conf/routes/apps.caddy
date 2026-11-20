@@ -1,8 +1,34 @@
-(lan_app_proxy) {
+(internal_ui_assets) {
+	handle /_ui/theme.css {
+		root * /etc/caddy
+		rewrite * /ui/theme.css
+		header Cache-Control no-cache
+		file_server
+	}
+}
+
+(lan_ui_proxy) {
 	import access_log
+	import internal_ui_tls
+	@lan remote_ip 10.0.0.0/24
+	handle @lan {
+		import internal_ui_assets
+		reverse_proxy {args[0]}
+	}
+	handle {
+		respond 403
+	}
+}
+
+(internal_ui_tls) {
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
 	}
+}
+
+(lan_app_proxy) {
+	import access_log
+	import internal_ui_tls
 
 	@lan remote_ip 10.0.0.0/24
 	handle @lan {

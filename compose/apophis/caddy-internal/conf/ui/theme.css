@@ -1,0 +1,21 @@
+:root {
+  color-scheme: dark;
+  --bg: oklch(17% .025 250);
+  --surface: oklch(22% .028 249);
+  --hover: oklch(28% .035 247);
+  --ink: oklch(95% .013 245);
+  --muted: oklch(74% .035 248);
+  --edge: oklch(36% .035 248);
+  --link: oklch(82% .09 224);
+  --ok: oklch(81% .11 163);
+  --bad: oklch(82% .125 35);
+  --space: .5rem;
+  --small: .8125rem;
+  --mono: ui-monospace, Menlo, Consolas, monospace;
+  --body: 'Avenir Next', 'Trebuchet MS', sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.5 var(--body); }
+a { color: var(--link); text-underline-offset: .2em; }
+a:hover { background: var(--hover); }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }

@@ -4,48 +4,36 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Preview routes · Apophis</title>
+  <link rel="stylesheet" href="/_ui/theme.css">
   <style nonce="{{ nonce }}">
-    :root {
-      color-scheme: dark;
-      --bg: oklch(17% .018 166); --surface: oklch(22% .022 166);
-      --text: oklch(94% .016 160); --muted: oklch(75% .036 164);
-      --edge: oklch(41% .043 164); --accent: oklch(85% .17 143);
-      --accent-ink: oklch(22% .043 160); --unit: .5rem;
-      --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-      --body: 'Segoe UI', 'Trebuchet MS', sans-serif;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--text); font: 1rem/1.55 var(--body); }
     main { max-width: 78rem; margin-inline: auto; padding: clamp(1rem, 5vw, 4rem); }
-    header { border-block-start: .25rem solid var(--accent); padding-block: calc(3 * var(--unit)); }
-    .stamp { color: var(--accent); font: .8125rem/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
-    h1 { font: 700 clamp(1.75rem, 6vw, 3.125rem)/1.1 var(--mono); margin: var(--unit) 0; }
+    header { border-bottom: 1px solid var(--edge); padding-bottom: calc(2 * var(--space)); }
+    .stamp { color: var(--muted); font: var(--small)/1.5 var(--mono); }
+    h1 { font-size: 1.45rem; margin: 0; }
     p { margin: 0; color: var(--muted); }
-    nav { display: flex; flex-wrap: wrap; gap: var(--unit); margin-block: var(--unit) calc(3 * var(--unit)); }
-    a { color: var(--accent); overflow-wrap: anywhere; text-underline-offset: .2em; }
-    nav a { border: 1px solid var(--edge); padding: var(--unit) calc(2 * var(--unit)); text-decoration: none; }
-    nav a[aria-current] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+    nav { display: flex; flex-wrap: wrap; gap: var(--space); margin-block: calc(2 * var(--space)); }
+    a { overflow-wrap: anywhere; }
+    nav a { border: 1px solid var(--edge); padding: var(--space) calc(2 * var(--space)); text-decoration: none; }
+    nav a[aria-current] { background: var(--link); border-color: var(--link); color: var(--bg); }
     a:hover, summary:hover { text-decoration: underline; }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     .ledger { background: var(--surface); border: 1px solid var(--edge); }
     article { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
-      gap: calc(2 * var(--unit)); padding: calc(2 * var(--unit)); }
+      gap: calc(2 * var(--space)); padding: calc(2 * var(--space)); }
     article + article { border-block-start: 1px solid var(--edge); }
-    h2 { font: 700 1.125rem/1.3 var(--mono); margin: .25rem 0; }
+    h2 { font-size: 1.125rem; margin: .25rem 0; }
     .endpoint, code, time { font-family: var(--mono); font-size: .875rem; overflow-wrap: anywhere; }
     .label { display: block; color: var(--muted); margin-block-end: .25rem; font-size: .875rem; }
-    details { margin-block-start: var(--unit); }
-    summary { color: var(--accent); cursor: pointer; min-height: 1.75rem; }
-    .empty { padding: calc(3 * var(--unit)); }
-    .empty strong { display: block; margin-bottom: var(--unit); }
-    footer { margin-top: calc(2 * var(--unit)); font-size: .875rem; }
+    details { margin-block-start: var(--space); }
+    summary { color: var(--link); cursor: pointer; min-height: 1.75rem; }
+    .empty { padding: calc(3 * var(--space)); }
+    .empty strong { display: block; margin-bottom: var(--space); }
+    footer { margin-top: calc(2 * var(--space)); font-size: .875rem; }
     @media (max-width: 46rem) { article { grid-template-columns: minmax(0, 1fr); } }
   </style>
 </head>
 <body>
   <main>
     <header>
-      <div class="stamp">Apophis / LAN console</div>
       <h1>Preview routes</h1>
       <p>{{ routes|length }} active · {{ scope|capitalize if scope else 'All scopes' }}</p>
     </header>

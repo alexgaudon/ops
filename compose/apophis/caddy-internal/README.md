@@ -1,6 +1,12 @@
 # Bazarr private proxy pilot
 
 `conf/Caddyfile` holds global options and imports `conf/routes/*.caddy`.
+
+The first-party dashboards (Home, Preview Registry, and Caddy Traffic) use
+`conf/ui/theme.css` for color, type, and focus styles. For a new internal UI,
+serve the shared stylesheet as `/_ui/theme.css` on the app's own hostname
+via `lan_ui_proxy`, and keep layout rules in the app. Allow `style-src 'self'`
+in the page's CSP. The stylesheet follows the same LAN restriction as the app.
 `conf/routes/media.caddy` groups the four media apps and their shared LAN
 access and TLS rules. Keep future generated dev-proxy config separate from
 these tracked files and import it only on the internal listener.

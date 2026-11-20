@@ -127,7 +127,7 @@ def render(route, window, gaps, now):
                'could not be read; counts may be incomplete.</p>' if gaps else "")
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Caddy traffic</title><link rel="stylesheet" href="/dashboard.css"></head>
+<title>Caddy traffic</title><link rel="stylesheet" href="/_ui/theme.css"><link rel="stylesheet" href="/dashboard.css?v=2"></head>
 <body><main><header><div><h1>Caddy traffic</h1><p class="note">Public and internal · Snapshot at {stamp}</p></div>
 <nav aria-label="Time window">{nav}</nav></header>
 <dl class="totals"><div><dt>Requests</dt><dd>{window['total']:,}</dd></div><div><dt>Response bytes</dt><dd>{size_label(window['bytes'])}</dd></div>
