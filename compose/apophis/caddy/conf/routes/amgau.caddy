@@ -1,0 +1,7 @@
+amgau.com {
+	# Preserve the old redirect's destination without carrying over the path.
+	redir https://alexgaudon.dev/ 302
+	tls {
+		dns cloudflare {env.CLOUDFLARE_AMGAU_DNS_API_TOKEN}
+	}
+}
