@@ -1,0 +1,30 @@
+services:
+  caddy-traffic:
+    image: python:3.13-alpine
+    command: ["python", "-B", "/app/dashboard.py"]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 96m
+    volumes:
+      - ./dashboard.py:/app/dashboard.py:ro
+      - ./dashboard.css:/app/dashboard.css:ro
+      - ../caddy/config:/logs/public:ro
+      - internal-config:/logs/internal:ro
+    # The Caddy config volumes also hold autosaved configuration. Mask it.
+    tmpfs:
+      - /logs/public/caddy:ro,nosuid,nodev,noexec,size=1m
+      - /logs/internal/caddy:ro,nosuid,nodev,noexec,size=1m
+    networks:
+      internal-caddy: {}
+
+networks:
+  internal-caddy:
+    external: true
+    name: caddy-internal_default
+
+volumes:
+  internal-config:
+    external: true
+    name: caddy-internal_caddy-config

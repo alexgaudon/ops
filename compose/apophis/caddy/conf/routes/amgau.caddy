@@ -1,4 +1,5 @@
 amgau.com {
+	import access_log
 	# Preserve the old redirect's destination without carrying over the path.
 	redir https://alexgaudon.dev/ 302
 	tls {

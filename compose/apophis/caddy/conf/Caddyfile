@@ -2,12 +2,13 @@
 # TLS via Let's Encrypt DNS-01 (Cloudflare), so certificates issue
 # without any inbound access to this host.
 
-import private/*.caddy
 import routes/*.caddy
+import private/*.caddy
 
 # --- migrated to this host ----------------------------------------------------
 
 misery.systems {
+	import access_log
 	reverse_proxy misery-systems-web:4321
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
@@ -15,6 +16,7 @@ misery.systems {
 }
 
 lootsheet.app {
+	import access_log
 	reverse_proxy lootsheet:8090
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
@@ -24,6 +26,7 @@ lootsheet.app {
 # --- external backends, previously proxied through the cluster ----------------
 
 jellyfin.misery.systems {
+	import access_log
 	reverse_proxy 10.0.0.5:8096
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
@@ -32,6 +35,7 @@ jellyfin.misery.systems {
 
 # Keep saved clients working without redirecting them to the preferred name.
 jellyfin.amgau.com {
+	import access_log
 	# The old proxy restricts metrics. Keep them off this compatibility route.
 	@metrics path /metrics /metrics/*
 	respond @metrics 403
@@ -47,6 +51,7 @@ jellyfin.amgau.com {
 }
 
 jellyseer.misery.systems {
+	import access_log
 	reverse_proxy 10.0.0.5:5055
 	tls {
 		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
@@ -55,6 +60,7 @@ jellyseer.misery.systems {
 
 # Keep the old requests URL working without a redirect.
 jellyseer.amgau.com {
+	import access_log
 	reverse_proxy 10.0.0.5:5055
 	tls {
 		dns cloudflare {env.CLOUDFLARE_AMGAU_DNS_API_TOKEN}

@@ -1,0 +1,23 @@
+# Keep in sync with the internal listener's access log policy.
+(access_log) {
+	log routes {
+		output file /config/access.log {
+			mode 0600
+			roll_size 10MiB
+			roll_interval 24h
+			roll_keep 7
+			roll_keep_for 168h
+		}
+		format filter {
+			request>uri regexp `\?.*$` ""
+			request>headers delete
+			request>remote_ip delete
+			request>remote_port delete
+			request>client_ip delete
+			request>tls delete
+			resp_headers delete
+			user_id delete
+			wrap json
+		}
+	}
+}
