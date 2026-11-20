@@ -1,0 +1,25 @@
+(lan_app_proxy) {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_DNS_API_TOKEN}
+	}
+
+	@lan remote_ip 10.0.0.0/24
+	handle @lan {
+		reverse_proxy {args[0]}
+	}
+	handle {
+		respond 403
+	}
+}
+
+relay.internal.misery.systems {
+	import lan_app_proxy 10.0.0.32:8083
+}
+
+onecli.internal.misery.systems {
+	import lan_app_proxy 10.0.0.39:10254
+}
+
+tallyo.internal.misery.systems {
+	import lan_app_proxy 10.0.0.13:80
+}

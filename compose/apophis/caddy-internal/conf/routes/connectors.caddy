@@ -1,0 +1,11 @@
+proton-connector.internal.misery.systems {
+	import lan_app_proxy 10.0.0.32:8080
+}
+
+loseit-connector.internal.misery.systems {
+	import lan_app_proxy 10.0.0.32:8081
+}
+
+fitbit-connector.internal.misery.systems {
+	import lan_app_proxy 10.0.0.32:8082
+}
