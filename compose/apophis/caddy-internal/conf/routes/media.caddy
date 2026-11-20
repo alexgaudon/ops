@@ -30,3 +30,7 @@ radarr.internal.misery.systems {
 prowlarr.internal.misery.systems {
 	import lan_media_proxy 10.0.0.5:9696
 }
+
+jellystats.internal.misery.systems {
+	import lan_media_proxy 10.0.0.5:10832
+}
