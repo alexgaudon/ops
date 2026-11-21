@@ -10,6 +10,7 @@ from time import monotonic, perf_counter
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
+from media import media_widgets, poster
 
 SITE = Path(__file__).with_name('site')
 CHECKS = (
@@ -121,24 +122,32 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.partition('?')[0]
         status = 200
+        cache = 'no-store'
         if path == '/':
-            with ThreadPoolExecutor(max_workers=2) as pool:
+            with ThreadPoolExecutor(max_workers=3) as pool:
                 forecast = pool.submit(weather_html)
+                media_data = pool.submit(media_widgets)
                 stamp, rows = checks_html()
-            body = ((SITE / 'index.html').read_text().replace('<!-- CHECK_TIME -->', stamp)
-                    .replace('<!-- CHECK_ROWS -->', rows).replace('<!-- WEATHER -->', forecast.result()).encode())
+            html = ((SITE / 'index.html').read_text().replace('<!-- CHECK_TIME -->', stamp)
+                    .replace('<!-- CHECK_ROWS -->', rows).replace('<!-- WEATHER -->', forecast.result()))
+            for name, value in media_data.result().items():
+                html = html.replace(f'<!-- {name} -->', value)
+            body = html.encode()
             media = 'text/html'
         elif path == '/home.css':
             body, media = (SITE / 'home.css').read_bytes(), 'text/css'
         elif path == '/home.js':
             body, media = (SITE / 'home.js').read_bytes(), 'text/javascript'
+        elif path.startswith('/media/posters/') and (image := poster(path.removeprefix('/media/posters/'))) is not None:
+            body, media = image, 'image/jpeg'
+            cache = 'private, max-age=3600'
         else:
             status, body, media = 404, b'Not found\n', 'text/plain'
         self.send_response(status)
-        self.send_header('Content-Type', f'{media}; charset=utf-8')
+        self.send_header('Content-Type', media if media == 'image/jpeg' else f'{media}; charset=utf-8')
         self.send_header('Content-Length', str(len(body)))
-        self.send_header('Cache-Control', 'no-store')
-        self.send_header('Content-Security-Policy', "default-src 'none'; style-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'")
+        self.send_header('Cache-Control', cache)
+        self.send_header('Content-Security-Policy', "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; frame-ancestors 'none'; base-uri 'none'")
         self.send_header('X-Content-Type-Options', 'nosniff')
         self.end_headers()
         if self.command != 'HEAD':

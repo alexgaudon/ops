@@ -8,7 +8,20 @@ header p, .section-head p, .check-footer p, td small { color: var(--muted); font
 header p, .section-head p, .timing, td small { font-family: var(--mono); }
 .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(20rem, .56fr); gap: clamp(1.5rem, 3vw, 3rem); align-items: start; }
 .main-column, .sidebar { display: grid; gap: calc(3 * var(--space)); min-width: 0; }
-.checks, .weather { border: 1px solid var(--edge); background: var(--surface); }
+.checks, .weather, .widget { border: 1px solid var(--edge); background: var(--surface); }
+.widget-body { border-top: 1px solid var(--edge); padding: var(--space) calc(2 * var(--space)); }
+.media-list { padding: 0; list-style: none; }
+.media-list li { display: grid; gap: .2rem; padding: var(--space) 0; overflow-wrap: anywhere; }
+.media-list li + li { border-top: 1px solid var(--edge); }
+.media-list small, .library dt { color: var(--muted); font-size: var(--small); }
+.poster-strip { display: grid; grid-auto-flow: column; grid-auto-columns: clamp(7.5rem, 27%, 10rem); gap: var(--space); list-style: none; padding: var(--space) 0; overflow-x: auto; }
+.poster-strip li { border: 1px solid var(--edge); background: var(--bg); min-width: 0; }
+.poster-art { aspect-ratio: 2 / 3; background: var(--hover); }
+.poster-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.poster-caption { display: grid; gap: .2rem; padding: var(--space); overflow-wrap: anywhere; }
+.poster-caption small { color: var(--muted); font-size: var(--small); }
+.library { display: flex; flex-wrap: wrap; gap: calc(3 * var(--space)); margin: var(--space) 0; }
+.library dd { margin: 0; font: 1.2rem/1.5 var(--mono); }
 .service-search label { display: block; margin-bottom: var(--space); font-weight: 600; }
 .service-search input { width: 100%; color: var(--ink); background: var(--surface); border: 1px solid var(--edge); font: inherit; padding: var(--space) calc(2 * var(--space)); min-height: 44px; }
 .service-search p, .muted { color: var(--muted); font-size: var(--small); }

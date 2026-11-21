@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>Apophis</title>
   <link rel="stylesheet" href="/_ui/theme.css">
-  <link rel="stylesheet" href="/home.css?v=3">
+  <link rel="stylesheet" href="/home.css?v=5">
   <script src="/home.js?v=1" defer></script>
 </head>
 <body>
@@ -46,11 +46,31 @@
           </ul></section>
         </div>
       </nav>
+      <section class="widget" aria-labelledby="recent">
+        <div class="section-head"><h2 id="recent">Recently added episodes</h2><a href="https://jellyfin.misery.systems/">Jellyfin</a></div>
+        <div class="widget-body" tabindex="0" role="region" aria-label="Recent episode posters"><!-- RECENT_EPISODES --></div>
+      </section>
+      <section class="widget" aria-labelledby="upcoming-tv">
+        <div class="section-head"><h2 id="upcoming-tv">Upcoming TV</h2><p>Next 30 days · <!-- MEDIA_TIMEZONE --></p></div>
+        <div class="widget-body"><!-- UPCOMING_TV --></div>
+      </section>
+      <section class="widget" aria-labelledby="upcoming-movies">
+        <div class="section-head"><h2 id="upcoming-movies">Upcoming movies</h2><p>Next 30 days</p></div>
+        <div class="widget-body"><!-- UPCOMING_MOVIES --></div>
+      </section>
     </div>
     <aside class="sidebar" aria-label="Weather and service status">
     <section class="weather" aria-labelledby="weather">
       <div class="section-head"><h2 id="weather">Weather</h2><p>St. John’s, NL</p></div>
       <div class="weather-body"><!-- WEATHER --></div>
+    </section>
+    <section class="widget" aria-labelledby="playback">
+      <div class="section-head"><h2 id="playback">Jellyfin sessions</h2></div>
+      <div class="widget-body"><!-- JELLYFIN_SESSIONS --></div>
+    </section>
+    <section class="widget" aria-labelledby="library">
+      <div class="section-head"><h2 id="library">Jellyfin library</h2></div>
+      <div class="widget-body"><!-- JELLYFIN_COUNTS --></div>
     </section>
     <section class="checks" aria-labelledby="checks">
       <div class="section-head">

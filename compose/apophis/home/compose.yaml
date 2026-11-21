@@ -7,8 +7,12 @@ services:
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
     volumes:
       - ./server.py:/app/server.py:ro
+      - ./media.py:/app/media.py:ro
       - ./site:/app/site:ro
     networks: [internal-caddy]
 
