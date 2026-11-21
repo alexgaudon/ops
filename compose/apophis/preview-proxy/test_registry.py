@@ -70,6 +70,37 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(self.resolve("external").status_code, 404)
         self.assertEqual(self.resolve().status_code, 204)
 
+    def test_week_long_expiry_is_external_only(self):
+        self.assertEqual(self.create(ttl_seconds=86401).status_code, 400)
+        self.assertEqual(self.create(key="e", scope="external", ttl_seconds=604801).status_code, 400)
+        public = self.create(key="e", scope="external", ttl_seconds=604800)
+        self.assertEqual(public.status_code, 201)
+        self.assertEqual(public.json["expires_at"], self.clock + 604800)
+        self.clock += 604799
+        self.assertEqual(self.resolve("external").status_code, 401)
+        self.clock += 1
+        self.assertEqual(self.resolve("external").status_code, 404)
+
+    def test_password_exception_matches_only_the_original_route(self):
+        env = {**self.env, "PREVIEW_PUBLIC_WITHOUT_LOGIN": "demo=10.0.0.49:3000:1060"}
+        api = create_app(env, now=lambda: self.clock).test_client()
+        self.lookups["external"] = create_app({**env, "PREVIEW_ROLE": "lookup", "PREVIEW_LOOKUP_SCOPE": "external"},
+                                              now=lambda: self.clock).test_client()
+        self.assertEqual(self.create(key="e", scope="external").status_code, 201)
+        self.assertEqual(self.create(key="e", scope="external", name="other").status_code, 201)
+        self.assertEqual(self.resolve("external").status_code, 204)
+        other = self.lookups["external"].get("/resolve/external", headers={
+            "X-Preview-Host": "other.preview.external.misery.systems"})
+        self.assertEqual(other.status_code, 401)
+        route = api.get("/v1/routes?scope=external").json["routes"][0]
+        self.assertFalse(route["login_required"])
+        self.assertIsNone(route["basic_auth"])
+        self.assertIn(b"No login required.", api.get("/?scope=external").data)
+        self.clock += 60
+        self.assertEqual(self.resolve("external").status_code, 404)
+        self.assertEqual(self.create(key="e", scope="external").status_code, 201)
+        self.assertEqual(self.resolve("external").status_code, 401)
+
     def test_pinned_internal_route_does_not_expire(self):
         env = {**self.env, "PREVIEW_PINNED_INTERNAL": "demo=10.0.0.49:3000"}
         self.api = create_app(env, now=lambda: self.clock).test_client()
@@ -101,8 +132,16 @@ class RegistryTests(unittest.TestCase):
         page = self.api.get("/?scope=external")
         self.assertIn(b"Show login", page.data)
         self.assertIn(public["basic_auth"]["password"].encode(), page.data)
+        login_url = public["url"].replace("https://", f"https://preview:{public['basic_auth']['password']}@", 1)
+        self.assertIn(f"<code>{login_url}</code>".encode(), page.data)
+        self.assertNotIn(f'href="{login_url}"'.encode(), page.data)
+        self.assertNotIn(b"Login URL", self.api.get("/?scope=internal").data)
+        self.assertIn(b'<button class="copy-login" type="button" hidden>Copy login URL</button>', page.data)
+        self.assertIn(b'role="status"', page.data)
         self.assertNotIn(b"lan-only", page.data)
         self.assertIn("frame-ancestors 'none'", page.headers["Content-Security-Policy"])
+        nonce = page.data.split(b'<script nonce="', 1)[1].split(b'"', 1)[0].decode()
+        self.assertIn(f"script-src 'nonce-{nonce}'", page.headers["Content-Security-Policy"])
         response = self.api.get("/v1/routes?scope=external")
         self.assertEqual(response.headers["Cache-Control"], "no-store")
         self.assertEqual(response.headers["Cross-Origin-Resource-Policy"], "same-origin")

@@ -25,6 +25,13 @@
     .label { display: block; color: var(--muted); margin-block-end: .25rem; font-size: .875rem; }
     details { margin-block-start: var(--space); }
     summary { color: var(--link); cursor: pointer; min-height: 1.75rem; }
+    .login-url { margin-block: var(--space); }
+    .login-url code { display: block; user-select: all; }
+    .copy-login { margin-block: var(--space); padding: .25rem var(--space); min-height: 2rem;
+      border: 1px solid var(--edge); background: var(--surface); color: var(--link);
+      cursor: pointer; font: inherit; font-size: .875rem; }
+    .copy-login:hover { border-color: var(--link); }
+    .copy-login:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
     .empty { padding: calc(3 * var(--space)); }
     .empty strong { display: block; margin-bottom: var(--space); }
     footer { margin-top: calc(2 * var(--space)); font-size: .875rem; }
@@ -55,11 +62,17 @@
           <span class="label">Expires</span>
           {% if route.expires_at is none %}<span>Never (pinned)</span>{% else %}<time datetime="{{ route.expires_iso }}">{{ route.expires_label }}</time>{% endif %}
           {% if route.scope == 'external' %}
-            {% if route.basic_auth %}
+            {% if not route.login_required %}
+            <p>No login required.</p>
+            {% elif route.basic_auth %}
             <details>
               <summary>Show login</summary>
               <p>Username: <code>{{ route.basic_auth.username }}</code></p>
               <p>Password: <code>{{ route.basic_auth.password }}</code></p>
+              <p class="login-url"><span class="label">Login URL</span><code>https://{{ route.basic_auth.username }}:{{ route.basic_auth.password }}@{{ route.url[8:] }}</code></p>
+              <button class="copy-login" type="button" hidden>Copy login URL</button>
+              <p class="copy-status" role="status"></p>
+              <p>Share privately. If the browser rejects the login URL, use the regular link and enter the login above.</p>
             </details>
             {% else %}
             <p>Login not available.</p>
@@ -73,5 +86,25 @@
     </section>
     <footer><a href="/v1/routes{% if scope %}?scope={{ scope }}{% endif %}">View JSON</a></footer>
   </main>
+  <script nonce="{{ nonce }}">
+    if (navigator.clipboard?.writeText) {
+      for (const button of document.querySelectorAll('.copy-login')) {
+        const details = button.closest('details');
+        const url = details.querySelector('.login-url code');
+        const status = details.querySelector('.copy-status');
+        button.addEventListener('click', async () => {
+          status.textContent = '';
+          try {
+            await navigator.clipboard.writeText(url.textContent);
+            status.textContent = 'Copied to clipboard.';
+          } catch {
+            status.textContent = 'Could not copy. Select and copy the URL above.';
+          }
+        });
+        details.addEventListener('toggle', () => { if (!details.open) status.textContent = ''; });
+        button.hidden = false;
+      }
+    }
+  </script>
 </body>
 </html>

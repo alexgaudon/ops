@@ -26,7 +26,8 @@ The response contains the HTTPS `url` and `expires_at` (Unix seconds). External
 registration also returns `basic_auth` credentials. Caddy strips those
 credentials before proxying to the app.
 Names are unique within a scope until deleted or expired. The default TTL is one
-hour; set `ttl_seconds` from 60 to 86400. Delete with
+hour; set `ttl_seconds` from 60 to 86400 for internal routes or from 60 to
+604800 for external routes. Delete with
 `DELETE /v1/routes/<scope>/<name>` using the same scope's token. Expiry and deletion
 block new requests; they do not close an already-open stream.
 
@@ -50,6 +51,12 @@ The Apophis updater starts the registry before Caddy. Only internal Caddy joins
 the management network. Each proxy has its own lookup network and service.
 Use `sudo compose-update --previews` to deploy just the registry and both Caddy
 stacks without updating the other applications.
+
+The Mac CLI can use the existing administrative SSH connection rather than
+holding an external token. Install `../host/preview-publish.py` on Apophis as
+`/usr/local/bin/apophis-preview-publish`, owned by root and mode `0755`. It uses
+the token inside the API container and returns only the URL and expiry. The
+helper does not grant SSH or sudo access and cannot change the target policy.
 
 API tokens are SOPS-encrypted. The default internal target is the Mac on ports
 `3000–3999`, plus the existing dev-server ports `4321`, `30400`, `40004`, and

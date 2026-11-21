@@ -10,5 +10,9 @@ ledger: one framed list with ruled rows, not a wall of cards.
 - An 8 px spacing unit, square borders, no shadows or animation.
 - Scope filters use links with an explicit current state. Rows stack on narrow
   screens. External credentials start collapsed in native disclosure controls.
-- Empty and populated states are covered by template tests; no client scripts,
-  remote fonts, or third-party assets.
+  The login URL is selectable monospace text, not a navigable link. Keep the
+  separate username and password for browsers that reject embedded credentials.
+  The copy button gives inline feedback and leaves the URL selectable when the
+  browser blocks clipboard access.
+- Empty and populated states are covered by template tests. A nonce-protected
+  inline script handles clipboard writes; no remote fonts or third-party assets.

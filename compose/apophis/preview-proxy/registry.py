@@ -66,6 +66,12 @@ def create_app(config=os.environ, *, now=time.time):
     def allowed(scope, ip, port):
         return any(ip == target and low <= port <= high for target, low, high in policy[scope])
 
+    # Match the existing route's full identity, including its original expiry.
+    public_without_login = config.get("PREVIEW_PUBLIC_WITHOUT_LOGIN", "")
+
+    def no_login(name, ip, port, expires):
+        return public_without_login == f"{name}={ip}:{port}:{expires}"
+
     pinned = {}
     for entry in filter(None, map(str.strip, config.get("PREVIEW_PINNED_INTERNAL", "").split(","))):
         name, target = entry.split("=", 1)
@@ -133,7 +139,8 @@ def create_app(config=os.environ, *, now=time.time):
                 route = {"scope": route_scope, "name": name, "ip": ip, "port": port, "expires_at": expires,
                          "url": f"https://{name}.{DOMAINS[route_scope]}/"}
                 if route_scope == "external":
-                    password = external_password(name, nonce) if nonce else None
+                    route["login_required"] = not no_login(name, ip, port, expires)
+                    password = external_password(name, nonce) if nonce and route["login_required"] else None
                     if password and hmac.compare_digest(digest(password), password_hash or ""):
                         route["basic_auth"] = {"username": "preview", "password": password}
                     else:
@@ -148,7 +155,7 @@ def create_app(config=os.environ, *, now=time.time):
                 nonce = secrets.token_urlsafe(18)
                 return Response(render_template("previews.html", routes=routes, scope=scope, nonce=nonce),
                                 mimetype="text/html", headers={
-                                    "Content-Security-Policy": f"default-src 'none'; style-src 'self' 'nonce-{nonce}'; frame-ancestors 'none'; base-uri 'none'",
+                                     "Content-Security-Policy": f"default-src 'none'; style-src 'self' 'nonce-{nonce}'; script-src 'nonce-{nonce}'; frame-ancestors 'none'; base-uri 'none'",
                                     "Referrer-Policy": "no-referrer",
                                 })
             return jsonify(scope=scope or "all", routes=routes)
@@ -169,8 +176,9 @@ def create_app(config=os.environ, *, now=time.time):
                 return jsonify(error="invalid or reserved name"), 400
             if scope == "internal" and name in pinned:
                 return jsonify(error="preview is managed by server configuration"), 409
-            if type(port) is not int or type(ttl) is not int or not 60 <= ttl <= 86400:
-                return jsonify(error="invalid port or TTL (60–86400 seconds)"), 400
+            max_ttl = 604800 if scope == "external" else 86400
+            if type(port) is not int or type(ttl) is not int or not 60 <= ttl <= max_ttl:
+                return jsonify(error=f"invalid port or TTL (60–{max_ttl} seconds)"), 400
             try:
                 ip = private_ip(body.get("ip"))
             except ValueError:
@@ -221,12 +229,12 @@ def create_app(config=os.environ, *, now=time.time):
                 ip, port = pinned[name]
                 return Response(status=204, headers={"X-Preview-Upstream": f"{ip}:{port}"})
             with closing(connect(readonly=True)) as conn:
-                row = conn.execute("SELECT ip, port, password FROM routes WHERE scope = ? AND name = ? AND expires > ?",
+                row = conn.execute("SELECT ip, port, password, expires FROM routes WHERE scope = ? AND name = ? AND expires > ?",
                                    (scope, name, int(now()))).fetchone()
             if row is None or not allowed(scope, row[0], row[1]):
                 return Response(status=404)
-            ip, port, password = row
-            if scope == "external":
+            ip, port, password, expires = row
+            if scope == "external" and not no_login(name, ip, port, expires):
                 scheme, _, encoded = request.headers.get("Authorization", "").partition(" ")
                 try:
                     raw = base64.b64decode(encoded, validate=True).decode("ascii") if len(encoded) <= 100 else ""

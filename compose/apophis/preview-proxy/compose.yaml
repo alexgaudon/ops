@@ -11,6 +11,8 @@ x-service: &service
 x-policy: &policy
   PREVIEW_INTERNAL_TARGETS: ${PREVIEW_INTERNAL_TARGETS:-10.0.0.49:3000-3999,10.0.0.49:4321,10.0.0.49:30400,10.0.0.49:40004,10.0.0.49:40005}
   PREVIEW_EXTERNAL_TARGETS: ${PREVIEW_EXTERNAL_TARGETS:-}
+  # Exception for the current Rocky Coast link only; cannot extend its expiry.
+  PREVIEW_PUBLIC_WITHOUT_LOGIN: rockycoastmassage=10.0.0.49:3007:1795805088
   PREVIEW_PINNED_INTERNAL: tallyo=10.0.0.49:3003
 
 services:
