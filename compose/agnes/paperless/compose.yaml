@@ -20,3 +20,4 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_URL: https://paperless.amgau.xyz
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://paperless.internal.misery.systems
