@@ -9,3 +9,23 @@ paperless.internal.misery.systems {
 syncthing.internal.misery.systems {
 	import lan_app_proxy 10.0.0.5:8384
 }
+
+transmission.internal.misery.systems {
+	import lan_app_proxy 10.0.0.5:9091
+}
+
+usenet.internal.misery.systems {
+	import access_log
+	import internal_ui_tls
+
+	@lan remote_ip 10.0.0.0/24
+	handle @lan {
+		reverse_proxy 10.0.0.5:39993 {
+			# SABnzbd accepts its upstream address as Host.
+			header_up Host {upstream_hostport}
+		}
+	}
+	handle {
+		respond 403
+	}
+}

@@ -1,0 +1,131 @@
+name: downloader
+services:
+  dlvpn:
+    image: qmcgaw/gluetun@sha256:2733bb22b27e3efa7a9f2cef9057ec12791b8b225793fcd3dbfd0508404dfc25
+    container_name: dlvpn
+    restart: unless-stopped
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      TZ: America/New_York
+      VPN_SERVICE_PROVIDER: custom
+      VPN_TYPE: wireguard
+    ports:
+      - "5800:5800"
+      - "6500:6500"
+      - "9392:9392"
+      - "8888:8888"
+      - "8388:8388"
+      - "8388:8388/udp"
+      - "8112:8112"
+      - "6888:6888"
+      - "6888:6888/udp"
+      - "6881:6881"
+      - "6881:6881/udp"
+      - "6969:6969"
+      - "6800:6800"
+      - "8080:8080"
+      - "9091:9091"
+    volumes:
+      - type: bind
+        source: /mnt/pool/docker/gluetun
+        target: /gluetun
+        bind:
+          create_host_path: false
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr@sha256:c80ae007ce2ccdcd217a12426e4f039ef763ff90738c808d38810c3e59323767
+    container_name: flaresolverr
+    restart: unless-stopped
+    environment:
+      CAPTCHA_SOLVER: none
+      LOG_HTML: "false"
+      LOG_LEVEL: info
+      TZ: Europe/London
+    ports:
+      - "8191:8191"
+
+  jdownloader-2:
+    image: jlesage/jdownloader-2@sha256:bd6cd2fdc72818f30207e677b33cd7f1b425048c4e7132624e541e99f992be4c
+    container_name: jdownloader2
+    network_mode: service:dlvpn
+    volumes:
+      - type: bind
+        source: /mnt/pool/docker/jdconfig/
+        target: /config
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /mnt/pool/docker/jdoutput/
+        target: /output
+        bind:
+          create_host_path: false
+
+  rdt:
+    image: rogerfar/rdtclient@sha256:647db1c0040b1b28bb0e874fd2b58e315c52004c0c27d24e0e0b9be7f6d92469
+    container_name: rdt
+    restart: unless-stopped
+    network_mode: service:dlvpn
+    environment:
+      PGID: "0"
+      PUID: "0"
+      TZ: Etc/UTC
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - type: bind
+        source: /mnt/content/downloads/rdt
+        target: /data/downloads
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /mnt/pool/docker/rdt
+        target: /data/db
+        bind:
+          create_host_path: false
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd@sha256:4f7ee6c53834bc336365bd0a7c35f4fc870156a72d33a334753010258aa077a4
+    container_name: sabnzbd
+    restart: unless-stopped
+    environment:
+      PGID: "1000"
+      PUID: "1000"
+      TZ: America/St_Johns
+    ports:
+      - "0.0.0.0:39993:8080"
+    volumes:
+      - type: bind
+        source: /mnt/content/downloads/usenet
+        target: /downloads
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /mnt/pool/docker/usenet
+        target: /config
+        bind:
+          create_host_path: false
+
+  transmission:
+    image: lscr.io/linuxserver/transmission@sha256:4813745e2c721997d8849f5718786fd4406b3c656fbef479f87a161e51383cbd
+    container_name: transmission
+    restart: unless-stopped
+    network_mode: service:dlvpn
+    environment:
+      PGID: "0"
+      PUID: "0"
+      TZ: Etc/UTC
+    volumes:
+      - type: bind
+        source: /mnt/content/downloads/transmission
+        target: /downloads
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /mnt/pool/docker/transmission-config
+        target: /config
+        bind:
+          create_host_path: false
