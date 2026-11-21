@@ -4,5 +4,7 @@ creation_rules:
     age: age1gn9rqrgxqwkhs2ggpn6tp9yk22rtwczn2j5rxuxcrd2muea09afqnryz0y
   - path_regex: ^compose/apophis/caddy/private\.caddy$
     age: age1gn9rqrgxqwkhs2ggpn6tp9yk22rtwczn2j5rxuxcrd2muea09afqnryz0y,age12ghzgz7n3nefdj98x643yu4lccjcyv09zvx6mvav9qwwm0flpg5qrc0e3h
+  - path_regex: ^compose/agnes/nas-media/secrets\.env$
+    age: age1gn9rqrgxqwkhs2ggpn6tp9yk22rtwczn2j5rxuxcrd2muea09afqnryz0y,age1njapn5rwxnlny0mnf0hrcrwhp6qmvzh8sr9m8velqcrhfe6kj4ssrzyx3w
   - path_regex: compose/.*\.env$
     age: age1gn9rqrgxqwkhs2ggpn6tp9yk22rtwczn2j5rxuxcrd2muea09afqnryz0y,age12ghzgz7n3nefdj98x643yu4lccjcyv09zvx6mvav9qwwm0flpg5qrc0e3h
