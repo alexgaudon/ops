@@ -1,0 +1,22 @@
+name: paperless
+services:
+  broker:
+    image: docker.io/library/redis@sha256:009cc37796fbdbe1b631b4cc0582bed167e5e403ed8bcd06f77eb6cb5aeb6f93
+    restart: unless-stopped
+    volumes:
+      - /mnt/pool/docker/paperless/redis:/data
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx@sha256:4b05bcd28e6923768000b5d247cbf2c66fd49bdc3f3b05955bd4f6790a638b01
+    restart: unless-stopped
+    depends_on:
+      - broker
+    ports:
+      - "8000:8000"
+    volumes:
+      - /mnt/pool/docker/paperless/data:/usr/src/paperless/data
+      - /mnt/pool/docker/paperless/media:/usr/src/paperless/media
+      - /mnt/pool/docker/paperless/export:/usr/src/paperless/export
+      - /mnt/pool/docker/paperless/consume:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_URL: https://paperless.amgau.xyz
