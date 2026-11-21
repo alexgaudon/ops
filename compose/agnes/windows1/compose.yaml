@@ -1,0 +1,22 @@
+name: windows1
+services:
+  windows:
+    image: dockurr/windows@sha256:20b398ab935465f97ec8ab06489f7a85a5ad58e74e036ce66cc3c9172e7dbea8
+    container_name: windows1
+    environment:
+      VERSION: "11"
+      CPU_CORES: "6"
+      RAM_SIZE: 12G
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "8006:8006"
+      - "3389:3389/tcp"
+      - "3389:3389/udp"
+    volumes:
+      - /mnt/pool/windows:/storage
+    restart: always
+    stop_grace_period: 2m

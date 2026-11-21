@@ -1,0 +1,22 @@
+name: windows2
+services:
+  windows:
+    image: dockurr/windows@sha256:20b398ab935465f97ec8ab06489f7a85a5ad58e74e036ce66cc3c9172e7dbea8
+    container_name: windows2
+    environment:
+      VERSION: "11"
+      CPU_CORES: "4"
+      RAM_SIZE: 12G
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "8007:8006"
+      - "3390:3389/tcp"
+      - "3390:3389/udp"
+    volumes:
+      - /mnt/pool/windows3:/storage
+    restart: always
+    stop_grace_period: 2m
