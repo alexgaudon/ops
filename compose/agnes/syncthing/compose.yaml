@@ -1,0 +1,31 @@
+name: syncthing
+services:
+  syncthing:
+    image: lscr.io/linuxserver/syncthing@sha256:f9494b8b82fa7ccb3e21cfce360faf22b44394c07ad677bcce70667b7079b9ed
+    container_name: syncthing
+    restart: unless-stopped
+    environment:
+      PUID: "568"
+      PGID: "568"
+      TZ: Etc/UTC
+    ports:
+      - "8384:8384"
+      - "22000:22000/tcp"
+      - "22000:22000/udp"
+      - "21027:21027/udp"
+    volumes:
+      - type: bind
+        source: /mnt/pool/docker/syncthing/config
+        target: /config
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /mnt/pool/sync/alex
+        target: /alex
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /mnt/pool/sync/will
+        target: /will
+        bind:
+          create_host_path: false

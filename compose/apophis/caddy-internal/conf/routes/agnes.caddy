@@ -5,3 +5,7 @@ dozzle.internal.misery.systems {
 paperless.internal.misery.systems {
 	import lan_app_proxy 10.0.0.5:8000
 }
+
+syncthing.internal.misery.systems {
+	import lan_app_proxy 10.0.0.5:8384
+}
