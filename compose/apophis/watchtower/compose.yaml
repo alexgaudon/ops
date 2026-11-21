@@ -11,6 +11,8 @@ services:
       DOCKER_API_VERSION: "1.44"
       # Only manage containers that opt in via the watchtower.enable label
       WATCHTOWER_LABEL_ENABLE: "true"
+      # Leave the independently scoped Tallyo updater alone.
+      WATCHTOWER_SCOPE: "none"
       # Daily at 04:00 UTC
       WATCHTOWER_SCHEDULE: "0 0 4 * * *"
       # Remove superseded images so the disk does not fill

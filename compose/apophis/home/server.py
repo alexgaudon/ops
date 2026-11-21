@@ -18,7 +18,7 @@ CHECKS = (
     ('Jellyfin', 'jellyfin.misery.systems', 'https://jellyfin.misery.systems/System/Info/Public', 'HTTPS route'),
     ('Lootsheet', 'lootsheet.app', 'https://lootsheet.app/', 'HTTPS route'),
     ('Relay', 'relay.internal.misery.systems', 'http://10.0.0.32:8083/', 'Backend'),
-    ('Tallyo', 'tallyo.internal.misery.systems', 'http://10.0.0.13/api/auth/session', 'Backend'),
+    ('Tallyo', 'tallyo.internal.misery.systems', 'http://10.0.0.50:13880/api/auth/session', 'Backend'),
     ('Sonarr', 'sonarr.internal.misery.systems', 'http://10.0.0.5:8989/', 'Backend'),
     ('Radarr', 'radarr.internal.misery.systems', 'http://10.0.0.5:7878/', 'Backend'),
 )

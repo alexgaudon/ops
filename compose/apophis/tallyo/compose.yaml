@@ -1,0 +1,66 @@
+name: tallyo
+services:
+  postgres:
+    image: postgres@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
+    container_name: tallyo-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -h 127.0.0.1 -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    image: ghcr.io/alexgaudon/tallyo:latest
+    pull_policy: missing
+    container_name: tallyo-server-prod
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      CORS_ORIGIN: https://tallyo.internal.misery.systems
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL}
+      DEPLOYMENT_TYPE: ${DEPLOYMENT_TYPE:?set DEPLOYMENT_TYPE}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID:?set DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET:?set DISCORD_CLIENT_SECRET}
+      DISCORD_REDIRECT_URI: https://tallyo.internal.misery.systems/api/auth/callback/discord
+      NODE_ENV: production
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY-}
+    ports:
+      - "10.0.0.50:13880:3000"
+    healthcheck:
+      test: [CMD, wget, -q, -T, "4", -O, /dev/null, http://127.0.0.1:3000/api/auth/session]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      com.centurylinklabs.watchtower.scope: tallyo
+
+  watchtower:
+    image: nickfedor/watchtower@sha256:62fb91130ddb493f869cad7e198fa260dd16c5da293ed092cbd5d8781566f7a6
+    restart: always
+    depends_on:
+      server:
+        condition: service_healthy
+    command: [--interval, "30", --cleanup, --scope, tallyo, --label-enable, tallyo-server-prod]
+    environment:
+      DOCKER_API_VERSION: "1.44"
+      REPO_USER: ${REPO_USER:?set REPO_USER}
+      REPO_PASS: ${REPO_PASS:?set REPO_PASS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      com.centurylinklabs.watchtower.scope: tallyo
+      com.centurylinklabs.watchtower.enable: "false"
+
+volumes:
+  postgres-data:

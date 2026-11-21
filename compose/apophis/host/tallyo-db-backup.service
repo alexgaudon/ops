@@ -1,0 +1,10 @@
+[Unit]
+Description=Back up Tallyo PostgreSQL to Agnes
+Requires=docker.service
+After=docker.service network-online.target
+RequiresMountsFor=/mnt/backup
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/tallyo-db-backup
+TimeoutStartSec=10min
