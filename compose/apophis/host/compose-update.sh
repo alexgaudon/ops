@@ -18,6 +18,15 @@ umask 077
 
 deploy_stack() (
   cd "$1"
+  if [ "${1%/}" = compose/apophis/caddy-internal ] && [ -f conf/trust/proxmox-cluster-ca.pem.sops ]; then
+    ca=conf/trust/proxmox-cluster-ca.pem
+    tmp=$(mktemp "${ca}.XXXXXXXX")
+    trap 'rm -f -- "$tmp"' EXIT
+    sops decrypt --input-type binary --output-type binary "$ca.sops" > "$tmp"
+    openssl x509 -in "$tmp" -noout
+    chmod 644 "$tmp"
+    mv -- "$tmp" "$ca"
+  fi
   if [ -f secrets.env ]; then
     tmp=$(mktemp .env.XXXXXXXX)
     trap 'rm -f -- "$tmp"' EXIT
