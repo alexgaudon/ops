@@ -3,13 +3,19 @@
 # Does not run Compose or modify services.
 set -euo pipefail
 target=/mnt/pool/ops/compose/agnes/host/compose-update.sh
-link=/usr/local/bin/compose-update
+bindir=/mnt/pool/ops-tools/bin
+link=$bindir/compose-update
+profile=/root/.bashrc
+pathline='export PATH="/mnt/pool/ops-tools/bin:$PATH"'
 [[ -x $target ]] || { echo 'Deployment helper is missing or not executable' >&2; exit 1; }
-if [[ -L $link && $(readlink "$link") = "$target" ]]; then
-  exit 0
-fi
-if [[ -e $link || -L $link ]]; then
+if [[ (-e $link || -L $link) && ! (-L $link && $(readlink "$link") = "$target") ]]; then
   echo 'Refusing to replace an unrelated compose-update command' >&2
   exit 1
 fi
-ln -s "$target" "$link"
+install -d -m 700 "$bindir"
+if [[ ! -L $link ]]; then
+  ln -s "$target" "$link"
+fi
+if ! grep -Fqx "$pathline" "$profile"; then
+  printf '\n# Agnes deployment tools live on the persistent data pool.\n%s\n' "$pathline" >> "$profile"
+fi

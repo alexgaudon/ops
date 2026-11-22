@@ -84,9 +84,12 @@ application-consistent data backups as appropriate.
 
 ## Command persistence
 
-`install-command.sh` creates `/usr/local/bin/compose-update` as a symlink to
-the executable helper in this checkout. It refuses to overwrite unrelated
-commands and does nothing if the correct symlink already exists.
+TrueNAS mounts `/usr` read-only. `install-command.sh` instead creates
+`/mnt/pool/ops-tools/bin/compose-update` as a symlink to the executable helper
+in this checkout and adds that persistent directory to root's Bash PATH.
+It refuses to overwrite an unrelated command and is safe to run repeatedly.
+New root SSH sessions pick up the command; an existing shell can use the full
+path or start a new session.
 
 Register a TrueNAS **Post Init** command through the supported middleware/UI:
 
@@ -94,8 +97,8 @@ Register a TrueNAS **Post Init** command through the supported middleware/UI:
 /bin/bash /mnt/pool/ops/compose/agnes/host/install-command.sh
 ```
 
-The boot task restores only the command symlink. It never pulls Git, starts
-containers, or applies configuration. Boot persistence needs verification at
+The boot task restores only command availability and root's PATH entry. It
+never pulls Git, starts containers, or applies configuration. Boot persistence needs verification at
 the next planned reboot; don't reboot solely to test it during this cutover.
 
 The local Git exclude list should hide the pre-existing rollback archives and
