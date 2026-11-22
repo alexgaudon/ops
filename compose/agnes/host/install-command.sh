@@ -5,7 +5,7 @@ set -euo pipefail
 target=/mnt/pool/ops/compose/agnes/host/compose-update.sh
 bindir=/mnt/pool/ops-tools/bin
 link=$bindir/compose-update
-profile=/root/.bashrc
+profiles=(/root/.bashrc /root/.zshenv)
 pathline='export PATH="/mnt/pool/ops-tools/bin:$PATH"'
 [[ -x $target ]] || { echo 'Deployment helper is missing or not executable' >&2; exit 1; }
 if [[ (-e $link || -L $link) && ! (-L $link && $(readlink "$link") = "$target") ]]; then
@@ -16,6 +16,8 @@ install -d -m 700 "$bindir"
 if [[ ! -L $link ]]; then
   ln -s "$target" "$link"
 fi
-if ! grep -Fqx "$pathline" "$profile"; then
-  printf '\n# Agnes deployment tools live on the persistent data pool.\n%s\n' "$pathline" >> "$profile"
-fi
+for profile in "${profiles[@]}"; do
+  if [[ ! -f $profile ]] || ! grep -Fqx "$pathline" "$profile"; then
+    printf '\n# Agnes deployment tools live on the persistent data pool.\n%s\n' "$pathline" >> "$profile"
+  fi
+done

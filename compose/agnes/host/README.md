@@ -86,7 +86,7 @@ application-consistent data backups as appropriate.
 
 TrueNAS mounts `/usr` read-only. `install-command.sh` instead creates
 `/mnt/pool/ops-tools/bin/compose-update` as a symlink to the executable helper
-in this checkout and adds that persistent directory to root's Bash PATH.
+in this checkout and adds that persistent directory to root's Bash and Zsh PATH.
 It refuses to overwrite an unrelated command and is safe to run repeatedly.
 New root SSH sessions pick up the command; an existing shell can use the full
 path or start a new session.
@@ -97,7 +97,10 @@ Register a TrueNAS **Post Init** command through the supported middleware/UI:
 /bin/bash /mnt/pool/ops/compose/agnes/host/install-command.sh
 ```
 
-The boot task restores only command availability and root's PATH entry. It
+Root uses Zsh for SSH commands, so the installer updates `.zshenv` as well as
+`.bashrc`. Both changes only expose the tools directory in the shell PATH.
+
+The boot task restores only command availability and root's PATH entries. It
 never pulls Git, starts containers, or applies configuration. Boot persistence needs verification at
 the next planned reboot; don't reboot solely to test it during this cutover.
 
