@@ -1,0 +1,16 @@
+nas.internal.misery.systems {
+	import access_log
+	import internal_ui_tls
+
+	@lan remote_ip 10.0.0.0/24
+	handle @lan {
+		reverse_proxy 10.0.0.5:80 {
+			# TrueNAS redirects / to an absolute HTTP /ui/ URL on this backend.
+			# Keep clients on HTTPS rather than bouncing through port 80.
+			header_down Location "^http://nas[.]internal[.]misery[.]systems(/.*)$" "https://nas.internal.misery.systems$1"
+		}
+	}
+	handle {
+		respond 403
+	}
+}

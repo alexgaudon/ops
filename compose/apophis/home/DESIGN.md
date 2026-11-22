@@ -17,6 +17,8 @@ comprehensive application health.
 The old dashboard informs the new layout: keyboard-first service search and
 links above the media widgets in the main column, with St. John's weather
 and service checks in the sidebar.
+The NAS (Agnes) bookmark belongs in Operations and uses its internal HTTPS
+hostname, following the same searchable text-link style as the other tools.
 The static directory remains usable without JavaScript. Weather is a live
 Open-Meteo snapshot cached for ten minutes, not a dependency of the checks.
 
