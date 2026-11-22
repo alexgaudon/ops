@@ -7,6 +7,12 @@ Git cutover and command installation don't deploy services. The first live
 deployment is a separate step: don't run `--apply` without approval for possible
 service interruptions.
 
+Activated on 2026-11-22: the existing deployment directory is now a clean
+`main` checkout with a public HTTPS origin. The persistent command is available
+in new root SSH sessions, and TrueNAS Post Init task 1 restores its PATH setup.
+All eight projects passed check-only mode after cutover. Container IDs, start
+times, and restart counts stayed unchanged. No `--apply` has been run.
+
 Preparation checks on 2026-11-22:
 
 - All eight live Compose definitions matched GitHub `main` at `b847bee`.
