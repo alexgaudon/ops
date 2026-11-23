@@ -1,4 +1,5 @@
-const input = document.querySelector('#service-search');
+const serviceInput = document.querySelector('#service-search');
+const webInput = document.querySelector('#web-search');
 const groups = [...document.querySelectorAll('#service-links section')];
 const results = document.querySelector('#search-results');
 const shortcutToggle = document.querySelector('#service-shortcuts');
@@ -18,8 +19,8 @@ for (const link of document.querySelectorAll('#service-links a[data-shortcut]'))
 function updateShortcuts() {
   const enabled = shortcutToggle.checked;
   searchShortcut.hidden = !enabled;
-  if (enabled) input.setAttribute('aria-keyshortcuts', '/');
-  else input.removeAttribute('aria-keyshortcuts');
+  if (enabled) webInput.setAttribute('aria-keyshortcuts', '/');
+  else webInput.removeAttribute('aria-keyshortcuts');
   for (const [key, { link, hint }] of shortcuts) {
     hint.hidden = !enabled;
     if (enabled) link.setAttribute('aria-keyshortcuts', key.toUpperCase());
@@ -43,7 +44,7 @@ shortcutToggle.addEventListener('change', () => {
 updateShortcuts();
 
 function filter() {
-  const query = input.value.trim().toLowerCase();
+  const query = serviceInput.value.trim().toLowerCase();
   const matches = [];
   for (const group of groups) {
     let visible = 0;
@@ -61,14 +62,14 @@ function filter() {
   return matches;
 }
 
-input.addEventListener('input', filter);
-input.addEventListener('keydown', (event) => {
+serviceInput.addEventListener('input', filter);
+serviceInput.addEventListener('keydown', (event) => {
   if (event.isComposing) return;
   if (event.key === 'Escape') {
     event.preventDefault();
-    input.value = '';
+    serviceInput.value = '';
     filter();
-  } else if (event.key === 'Enter' && input.value.trim()) {
+  } else if (event.key === 'Enter' && serviceInput.value.trim()) {
     event.preventDefault();
     filter()[0]?.click();
   }
@@ -80,7 +81,7 @@ document.addEventListener('keydown', (event) => {
 
   if (event.key === '/') {
     event.preventDefault();
-    input.focus();
+    webInput.focus();
     return;
   }
   const shortcut = !event.shiftKey && shortcuts.get(event.key.toLowerCase());
@@ -88,5 +89,5 @@ document.addEventListener('keydown', (event) => {
   event.preventDefault();
   shortcut.link.click();
 });
-input.closest('.service-search').hidden = false;
+serviceInput.closest('.service-search').hidden = false;
 document.querySelector('#shortcut-setting').hidden = false;

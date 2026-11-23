@@ -6,26 +6,36 @@
   <meta name="color-scheme" content="dark">
   <title>Apophis</title>
   <link rel="stylesheet" href="/_ui/theme.css">
-  <link rel="stylesheet" href="/home.css?v=6">
-  <script src="/home.js?v=2" defer></script>
+  <link rel="stylesheet" href="/home.css?v=7">
+  <script src="/home.js?v=3" defer></script>
 </head>
 <body>
 <main>
   <header><h1>Apophis</h1><p>Homelab / Internal</p></header>
   <div class="workspace">
     <div class="main-column">
-      <div class="service-search" hidden>
-        <label for="service-search">Find a service</label>
-        <input id="service-search" type="search" placeholder="Jellyfin, Sonarr, traffic…" autocomplete="off" aria-controls="service-links" aria-describedby="search-tip">
-        <p id="search-tip"><span id="search-shortcut" hidden>Press <kbd>/</kbd> to search. </span>Press <kbd>Enter</kbd> to open a match.</p>
-        <p id="search-results" role="status"></p>
-      </div>
+      <form class="web-search" role="search" aria-label="Web search" action="https://www.google.com/search" method="get">
+        <div class="web-search-heading">
+          <label for="web-search">Search Google</label>
+          <p id="search-shortcut" hidden>Press <kbd>/</kbd> to focus</p>
+        </div>
+        <div class="web-search-field">
+          <input id="web-search" name="q" type="search" required>
+          <button type="submit">Search</button>
+        </div>
+      </form>
       <nav id="service-links" aria-labelledby="services">
         <div class="service-heading">
           <h2 id="services">Service links</h2>
           <div id="shortcut-setting" hidden><label><input id="service-shortcuts" type="checkbox" checked> Single-key shortcuts</label></div>
         </div>
-        <div class="link-groups">
+        <div class="service-search" hidden>
+          <label for="service-search">Find a service</label>
+          <input id="service-search" type="search" placeholder="Jellyfin, Sonarr, traffic…" autocomplete="off" aria-controls="service-groups" aria-describedby="search-tip">
+          <p id="search-tip">Press <kbd>Enter</kbd> to open the first match.</p>
+          <p id="search-results" role="status"></p>
+        </div>
+        <div class="link-groups" id="service-groups">
           <section><h3>Operations</h3><ul>
             <li><a href="https://nas.internal.misery.systems/" data-shortcut="n">NAS (Agnes)</a></li>
             <li><a href="https://proxmox.internal.misery.systems/" data-shortcut="p">Proxmox</a></li>

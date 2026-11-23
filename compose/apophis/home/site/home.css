@@ -22,9 +22,15 @@ header p, .section-head p, .timing, td small { font-family: var(--mono); }
 .poster-caption small { color: var(--muted); font-size: var(--small); }
 .library { display: flex; flex-wrap: wrap; gap: calc(3 * var(--space)); margin: var(--space) 0; }
 .library dd { margin: 0; font: 1.2rem/1.5 var(--mono); }
-.service-search label { display: block; margin-bottom: var(--space); font-weight: 600; }
-.service-search input { width: 100%; color: var(--ink); background: var(--surface); border: 1px solid var(--edge); font: inherit; padding: var(--space) calc(2 * var(--space)); min-height: 44px; }
-.service-search p, .muted { color: var(--muted); font-size: var(--small); }
+.web-search-heading { display: flex; align-items: baseline; flex-wrap: wrap; justify-content: space-between; column-gap: var(--space); margin-bottom: var(--space); }
+.web-search label { font-weight: 600; }
+.web-search-field { display: flex; gap: var(--space); }
+.web-search input, .service-search input { width: 100%; min-width: 0; color: var(--ink); background: var(--surface); border: 1px solid var(--edge); font: inherit; padding: var(--space) calc(2 * var(--space)); min-height: 44px; }
+.web-search button { flex: none; border: 1px solid var(--edge); background: var(--surface); color: var(--link); padding-inline: calc(2 * var(--space)); font: inherit; cursor: pointer; }
+.web-search button:hover, .web-search button:active { background: var(--hover); }
+.service-search { margin-top: calc(2 * var(--space)); }
+.service-search label { display: block; margin-bottom: var(--space); color: var(--muted); font-size: var(--small); }
+.web-search p, .service-search p, .muted { color: var(--muted); font-size: var(--small); }
 #search-tip { margin-top: var(--space); }
 kbd { font: inherit; color: var(--ink); }
 .weather-body { border-top: 1px solid var(--edge); padding: calc(2 * var(--space)); }
