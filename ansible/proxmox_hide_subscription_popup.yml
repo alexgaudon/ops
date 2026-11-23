@@ -1,0 +1,81 @@
+---
+- name: Hide the Proxmox subscription popup in the web UI
+  hosts: proxmox_hosts
+  become: true
+  gather_facts: false
+  serial: 1
+  any_errors_fatal: true
+  vars:
+    proxmox_ui_asset: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+    # Match only the condition immediately before the popup. The same
+    # subscription check elsewhere in the UI must remain intact.
+    popup_context: >-
+      (?=\n[ \t]*\) \{\n[ \t]*Ext\.Msg\.show\(\{\n[ \t]*title: gettext\('No valid subscription'\),)
+    stock_pattern: >-
+      {{ "data.status.toLowerCase() !== 'active'" | regex_escape }}{{ popup_context }}
+    patched_line: 'false /* homelab: hide subscription popup */'
+    patched_pattern: "{{ patched_line | regex_escape }}{{ popup_context }}"
+  tasks:
+    - name: Inspect the current UI asset
+      ansible.builtin.slurp:
+        src: "{{ proxmox_ui_asset }}"
+      register: current_ui
+
+    - name: Require exactly one known popup condition
+      ansible.builtin.assert:
+        that:
+          - >-
+            ((current_ui.content | b64decode | regex_findall(stock_pattern) | length) +
+             (current_ui.content | b64decode | regex_findall(patched_pattern) | length)) == 1
+        fail_msg: The Proxmox UI changed. Review the popup code before patching this version.
+
+    - name: Patch and verify the UI
+      block:
+        - name: Suppress the inactive-subscription popup only
+          ansible.builtin.replace:
+            path: "{{ proxmox_ui_asset }}"
+            regexp: "{{ stock_pattern }}"
+            replace: "{{ patched_line }}"
+            backup: true
+          register: ui_patch
+
+        - name: Restart only the web proxy if the asset changed
+          ansible.builtin.systemd_service:
+            name: pveproxy
+            state: restarted
+          when: ui_patch.changed and not ansible_check_mode
+
+        - name: Verify the web proxy serves the patched asset
+          no_log: true
+          ansible.builtin.uri:
+            url: https://127.0.0.1:8006/proxmoxlib.js
+            # Loopback only: the node certificate does not name 127.0.0.1.
+            validate_certs: false
+            use_proxy: false
+            return_content: true
+          register: served_ui
+          until: >-
+            (served_ui.status | default(0)) == 200 and
+            (served_ui.content | default('') | regex_findall(patched_pattern) | length) == 1
+          retries: 5
+          delay: 2
+          when: not ansible_check_mode
+
+      rescue:
+        - name: Restore the original asset if this run changed it
+          ansible.builtin.copy:
+            src: "{{ ui_patch.backup_file }}"
+            dest: "{{ proxmox_ui_asset }}"
+            remote_src: true
+            mode: preserve
+          when: ui_patch.backup_file is defined
+
+        - name: Restart the web proxy after restoring the original asset
+          ansible.builtin.systemd_service:
+            name: pveproxy
+            state: restarted
+          when: ui_patch.backup_file is defined
+
+        - name: Stop the rollout
+          ansible.builtin.fail:
+            msg: The UI patch could not be verified. No further nodes will be changed.
