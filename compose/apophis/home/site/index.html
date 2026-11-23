@@ -6,8 +6,8 @@
   <meta name="color-scheme" content="dark">
   <title>Apophis</title>
   <link rel="stylesheet" href="/_ui/theme.css">
-  <link rel="stylesheet" href="/home.css?v=5">
-  <script src="/home.js?v=1" defer></script>
+  <link rel="stylesheet" href="/home.css?v=6">
+  <script src="/home.js?v=2" defer></script>
 </head>
 <body>
 <main>
@@ -17,39 +17,42 @@
       <div class="service-search" hidden>
         <label for="service-search">Find a service</label>
         <input id="service-search" type="search" placeholder="Jellyfin, Sonarr, traffic…" autocomplete="off" aria-controls="service-links" aria-describedby="search-tip">
-        <p id="search-tip">Press <kbd>/</kbd> to search, <kbd>Enter</kbd> to open a match.</p>
+        <p id="search-tip"><span id="search-shortcut" hidden>Press <kbd>/</kbd> to search. </span>Press <kbd>Enter</kbd> to open a match.</p>
         <p id="search-results" role="status"></p>
       </div>
       <nav id="service-links" aria-labelledby="services">
-        <h2 id="services">Service links</h2>
+        <div class="service-heading">
+          <h2 id="services">Service links</h2>
+          <div id="shortcut-setting" hidden><label><input id="service-shortcuts" type="checkbox" checked> Single-key shortcuts</label></div>
+        </div>
         <div class="link-groups">
           <section><h3>Operations</h3><ul>
-            <li><a href="https://nas.internal.misery.systems/">NAS (Agnes)</a></li>
-            <li><a href="https://proxmox.internal.misery.systems/">Proxmox</a></li>
-            <li><a href="https://kvm.internal.misery.systems/">JetKVM</a></li>
-            <li><a href="https://traffic.internal.misery.systems/">Caddy Traffic</a></li>
-            <li><a href="https://dozzle.internal.misery.systems/">Dozzle-Agnes</a></li>
-            <li><a href="https://relay.internal.misery.systems/">Relay</a></li>
-            <li><a href="https://onecli.internal.misery.systems/">OneCLI</a></li>
+            <li><a href="https://nas.internal.misery.systems/" data-shortcut="n">NAS (Agnes)</a></li>
+            <li><a href="https://proxmox.internal.misery.systems/" data-shortcut="p">Proxmox</a></li>
+            <li><a href="https://kvm.internal.misery.systems/" data-shortcut="k">JetKVM</a></li>
+            <li><a href="https://traffic.internal.misery.systems/" data-shortcut="g">Caddy Traffic</a></li>
+            <li><a href="https://dozzle.internal.misery.systems/" data-shortcut="d">Dozzle-Agnes</a></li>
+            <li><a href="https://relay.internal.misery.systems/" data-shortcut="e">Relay</a></li>
+            <li><a href="https://onecli.internal.misery.systems/" data-shortcut="o">OneCLI</a></li>
           </ul></section>
           <section><h3>Media</h3><ul>
-            <li><a href="https://jellyfin.misery.systems/">Jellyfin</a></li>
-            <li><a href="https://jellyseer.misery.systems/">Jellyseerr</a></li>
-            <li><a href="https://jellystats.internal.misery.systems/">Jellystats</a></li>
-            <li><a href="https://sonarr.internal.misery.systems/">Sonarr</a></li>
-            <li><a href="https://radarr.internal.misery.systems/">Radarr</a></li>
-            <li><a href="https://bazarr.internal.misery.systems/">Bazarr</a></li>
-            <li><a href="https://prowlarr.internal.misery.systems/">Prowlarr</a></li>
-            <li><a href="https://transmission.internal.misery.systems/transmission/web/">Transmission</a></li>
-            <li><a href="https://usenet.internal.misery.systems/">Usenet (SABnzbd)</a></li>
+            <li><a href="https://jellyfin.misery.systems/" data-shortcut="j">Jellyfin</a></li>
+            <li><a href="https://jellyseer.misery.systems/" data-shortcut="y">Jellyseerr</a></li>
+            <li><a href="https://jellystats.internal.misery.systems/" data-shortcut="i">Jellystats</a></li>
+            <li><a href="https://sonarr.internal.misery.systems/" data-shortcut="s">Sonarr</a></li>
+            <li><a href="https://radarr.internal.misery.systems/" data-shortcut="r">Radarr</a></li>
+            <li><a href="https://bazarr.internal.misery.systems/" data-shortcut="b">Bazarr</a></li>
+            <li><a href="https://prowlarr.internal.misery.systems/" data-shortcut="w">Prowlarr</a></li>
+            <li><a href="https://transmission.internal.misery.systems/transmission/web/" data-shortcut="m">Transmission</a></li>
+            <li><a href="https://usenet.internal.misery.systems/" data-shortcut="u">Usenet (SABnzbd)</a></li>
           </ul></section>
           <section><h3>Workbench</h3><ul>
-            <li><a href="https://paperless.internal.misery.systems/">Paperless</a></li>
-            <li><a href="https://syncthing.internal.misery.systems/">Syncthing</a></li>
-            <li><a href="https://code.internal.misery.systems/">Code-server</a></li>
-            <li><a href="https://preview-api.internal.misery.systems/">Preview Registry</a></li>
-            <li><a href="https://tallyo.internal.misery.systems/">Tallyo</a></li>
-            <li><a href="https://lootsheet.app/">Lootsheet</a></li>
+            <li><a href="https://paperless.internal.misery.systems/" data-shortcut="a">Paperless</a></li>
+            <li><a href="https://syncthing.internal.misery.systems/" data-shortcut="h">Syncthing</a></li>
+            <li><a href="https://code.internal.misery.systems/" data-shortcut="c">Code-server</a></li>
+            <li><a href="https://preview-api.internal.misery.systems/" data-shortcut="v">Preview Registry</a></li>
+            <li><a href="https://tallyo.internal.misery.systems/" data-shortcut="t">Tallyo</a></li>
+            <li><a href="https://lootsheet.app/" data-shortcut="l">Lootsheet</a></li>
           </ul></section>
         </div>
       </nav>

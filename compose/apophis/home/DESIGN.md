@@ -30,3 +30,9 @@ Fetch media data server-side with a two-minute cache. A failed API request
 shows an unavailable state rather than a zero or empty library.
 Recent episodes use a compact, horizontally scrollable strip of series
 posters. Plain series and episode names stay visible when art is missing.
+
+Service links show their one-letter keys in a right-aligned rail of quiet,
+square keycaps. The checkbox beside the heading turns off both link keys and
+the `/` search key, and remembers the choice in the browser. Shortcuts stay
+out of text entry and leave modified browser shortcuts alone. Without
+JavaScript, the service list stays visible without shortcut controls or hints.
