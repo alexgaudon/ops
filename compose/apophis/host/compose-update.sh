@@ -35,6 +35,9 @@ deploy_stack() (
   fi
   docker compose pull --quiet 2>/dev/null || true
   docker compose up -d --build
+  if [ "${1%/}" = compose/apophis/caddy-internal ]; then
+    bash ../host/caddy-internal-private.sh
+  fi
 )
 
 # Caddy attaches to networks created by the registry stack.

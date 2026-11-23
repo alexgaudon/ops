@@ -6,7 +6,8 @@ cd compose/apophis/caddy
 
 work=$(mktemp -d conf/.private-deploy.XXXXXXXX)
 trap 'rm -f -- "$work/routes.caddy" "$work/routes" "$work/Caddyfile" "$work/previous"; rmdir -- "$work"' EXIT
-sops decrypt --input-type binary --output-type binary private.caddy > "$work/routes.caddy"
+sops decrypt --input-type binary --output-type binary private.caddy |
+  sed '/^# internal: /d' > "$work/routes.caddy"
 
 # Keep the candidate beside Caddy's live config, outside its active import glob.
 # From the candidate directory, import only the freshly decrypted routes.
