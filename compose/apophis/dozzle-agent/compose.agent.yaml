@@ -1,0 +1,25 @@
+name: dozzle-agent
+services:
+  agent:
+    image: amir20/dozzle:v11.5.0
+    command: agent
+    restart: unless-stopped
+    environment:
+      DOZZLE_HOSTNAME: apophis
+      DOZZLE_ENABLE_ACTIONS: "false"
+      DOZZLE_ENABLE_SHELL: "false"
+    ports:
+      - "10.0.0.50:7007:7007"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    secrets:
+      - source: agent_cert
+        target: /dozzle_cert.pem
+      - source: agent_key
+        target: /dozzle_key.pem
+
+secrets:
+  agent_cert:
+    file: ./data/agent-tls/dozzle_cert.pem
+  agent_key:
+    file: ./data/agent-tls/dozzle_key.pem

@@ -1,0 +1,25 @@
+services:
+  dozzle:
+    image: amir20/dozzle:v11.5.0
+    # The TrueNAS boot task loads the port filter before starting Dozzle.
+    restart: "no"
+    ports: !override
+      - "10.0.0.5:8099:8080"
+    volumes:
+      - ./data/ui:/data
+    environment:
+      DOZZLE_HOSTNAME: agnes
+      DOZZLE_REMOTE_AGENT: "10.0.0.50:7007|apophis"
+      DOZZLE_ENABLE_ACTIONS: "false"
+      DOZZLE_ENABLE_SHELL: "false"
+    secrets:
+      - source: agent_cert
+        target: /dozzle_cert.pem
+      - source: agent_key
+        target: /dozzle_key.pem
+
+secrets:
+  agent_cert:
+    file: ./data/agent-tls/dozzle_cert.pem
+  agent_key:
+    file: ./data/agent-tls/dozzle_key.pem

@@ -1,0 +1,11 @@
+[Unit]
+Description=Restrict inbound Dozzle agent traffic to Agnes
+Before=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/nft -f /opt/dozzle-agent/dozzle-agent.nft
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

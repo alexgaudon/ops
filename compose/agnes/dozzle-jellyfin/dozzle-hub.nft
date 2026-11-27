@@ -1,0 +1,8 @@
+table inet dozzle_hub
+flush table inet dozzle_hub
+table inet dozzle_hub {
+    chain ingress {
+        type filter hook prerouting priority -150; policy accept;
+        ip daddr 10.0.0.5 ip saddr != 10.0.0.50 tcp dport 8099 counter drop
+    }
+}
