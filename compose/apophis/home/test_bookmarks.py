@@ -44,6 +44,12 @@ class BookmarkTests(unittest.TestCase):
         operations = html.split('<h3>Operations</h3>', 1)[1].split('</section>', 1)[0]
         self.assertIn('>NAS (Agnes)</a>', operations)
 
+    def test_dozzle_bookmark_names_both_hosts_and_keeps_shortcut(self):
+        html = (ROOT / 'site/index.html').read_text()
+        operations = html.split('<h3>Operations</h3>', 1)[1].split('</section>', 1)[0]
+        self.assertIn('href="https://dozzle.internal.misery.systems/" data-shortcut="d">'
+                      'Dozzle (Agnes + Apophis)</a>', operations)
+
     def test_nas_route_restricts_lan_and_preserves_https_redirects(self):
         route = (ROOT.parent / 'caddy-internal/conf/routes/nas.caddy').read_text()
         self.assertTrue(route.startswith('nas.internal.misery.systems {'))
