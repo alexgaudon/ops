@@ -1,0 +1,15 @@
+otclient-dashboard.internal.misery.systems {
+	import lan_app_proxy 10.0.0.111:3672
+}
+
+otclient-a.internal.misery.systems {
+	import lan_app_proxy 10.0.0.111:6080
+}
+
+otclient-b.internal.misery.systems {
+	import lan_app_proxy 10.0.0.111:6081
+
+	handle_errors 502 503 504 {
+		respond "OTClient B desktop is not available." 503
+	}
+}
