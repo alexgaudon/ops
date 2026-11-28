@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       DOZZLE_HOSTNAME: apophis
-      DOZZLE_ENABLE_ACTIONS: "false"
+      DOZZLE_ENABLE_ACTIONS: "true"
       DOZZLE_ENABLE_SHELL: "false"
     ports:
       - "10.0.0.50:7007:7007"

@@ -3,7 +3,8 @@
 The UI stays on Agnes. The existing internal Caddy route still serves
 <https://dozzle.internal.misery.systems/>. With the multihost overlay, the UI
 lists Agnes's local containers and connects to an Apophis agent for its
-containers and logs. Shell and container actions are off on both ends.
+containers and logs. Container actions require a Dozzle login; shell access
+is off on both ends.
 
 ## Live deployment
 
@@ -22,8 +23,7 @@ containers and logs. Shell and container actions are off on both ends.
 
 1. Use the included nftables files to restrict TCP `7007` to Agnes (`10.0.0.5`)
    and TCP `8099` to the internal Caddy source (`10.0.0.50`). The HTTPS route
-   still uses its existing LAN policy. Anyone allowed by that policy can see
-   both hosts' logs.
+   still uses its existing LAN policy. The hub also requires a Dozzle login.
 2. Generate a dedicated TLS pair once, on a trusted machine:
 
    ```sh
@@ -57,8 +57,10 @@ containers and logs. Shell and container actions are off on both ends.
    COMPOSE_FILE=compose.yaml:data/compose.multihost.yaml
    ```
 
-   Create `data/ui/` with mode `0700`. Pull `amir20/dozzle:v11.5.0`, then run `/bin/sh data/dozzle-hub-start.sh`
-   from the Agnes stack directory. Register the absolute script path under
+   Create `data/ui/` with mode `0700` and restore or provision a private
+   `data/ui/users.yml` for Dozzle's simple authentication. Pull
+   `amir20/dozzle:v11.5.0`, then run `/bin/sh data/dozzle-hub-start.sh` from the
+   Agnes stack directory. Register the absolute script path under
    TrueNAS Init/Shutdown Scripts as a Post Init command (90-second timeout).
 5. Open Dozzle and check that `agnes` and `apophis` are both listed. Open a
    container on each host and confirm that logs load and follow. Verify TCP
